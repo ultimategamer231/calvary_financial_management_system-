@@ -1,9 +1,11 @@
+import { authConfigured } from "./auth-config";
 import type { Database } from "./database.types";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function database() {
+  if (!authConfigured()) redirect("/login");
   const jar = await cookies();
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

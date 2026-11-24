@@ -1,7 +1,13 @@
+import { authConfigured } from "@/lib/auth-config";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
+  if (!authConfigured()) {
+    return request.nextUrl.pathname === "/login"
+      ? NextResponse.next()
+      : NextResponse.redirect(new URL("/login", request.url));
+  }
   let response = NextResponse.next({ request });
   const db = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -35,5 +41,10 @@ export const config = {
     "/categories/:path*",
     "/account/:path*",
     "/login",
+    "/settings/:path*",
+    "/reports/:path*",
+    "/audit/:path*",
+    "/recover",
+    "/auth/:path*",
   ],
 };

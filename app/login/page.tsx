@@ -1,3 +1,4 @@
+import { authConfigured } from "@/lib/auth-config";
 import { Seal } from "@/app/seal";
 import Link from "next/link";
 import { signIn } from "../actions";
@@ -6,6 +7,7 @@ export default async function Login({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
+  const ready = authConfigured();
   const { error } = await searchParams;
   return (
     <main className="signin">
@@ -19,7 +21,11 @@ export default async function Login({
       <section className="formpane">
         <form action={signIn}>
           <h1>Staff sign in</h1>
-          <p className="muted">Access the church finance workspace.</p>
+          <p className="muted">
+            {ready
+              ? "Access the church finance workspace."
+              : "Staff sign-in will be available once the church database is connected."}
+          </p>
           {error && (
             <p className="alert" role="alert">
               {error === "access"
@@ -33,6 +39,7 @@ export default async function Login({
               type="email"
               autoComplete="username"
               name="email"
+              disabled={!ready}
               required
               maxLength={254}
             />
@@ -43,14 +50,13 @@ export default async function Login({
               type="password"
               autoComplete="current-password"
               name="password"
+              disabled={!ready}
               required
               maxLength={1024}
             />
           </label>
-          <button>Sign in</button>
-          <p>
-            <Link href="/recover">Forgot password?</Link>
-          </p>
+          <button disabled={!ready}>Sign in</button>
+          <p>{ready && <Link href="/recover">Forgot password?</Link>}</p>
         </form>
       </section>
     </main>
