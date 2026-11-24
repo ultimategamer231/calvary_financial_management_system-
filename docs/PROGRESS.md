@@ -1,2 +1,4 @@
 # Progress
-Phase 0 planning audit passed for foundation work. Empty clone on unborn main with configured GitHub origin. Node 22.23.4, npm 10.9.9, pnpm 10.34.9, Git 2.53.0 and Edge present. Docker Desktop installed; daemon initially unreachable. Supabase CLI, gh and Playwright absent from PATH. Phase 1 must prove local startup and auth. No production or pilot data used.
+Phase 0 scope and planning audit passed. Node 22.23.4, npm 10.9.9, pnpm 10.34.9, Git 2.53.0 and Edge present. Docker Desktop started and returned server version 29.4.1. Supabase CLI, gh and Playwright absent from PATH. No runtime or database tests were run in planning.
+
+The first phase push returned HTTP 403 for 231gamer. Git Credential Manager lists only that identity. Remote branch lookup returned no matching ref. Resolve GitHub access using docs/human-guides/GITHUB_ACCESS.md, push phase/0-plan, verify its SHA, then branch for foundation. Receipt and dues policies are open for their respective phases. No cloud deployment or real financial data.
