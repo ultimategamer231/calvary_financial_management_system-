@@ -1,0 +1,449 @@
+@import "tailwindcss";
+:root {
+  --navy: #08085d;
+  --ink: #191b38;
+  --line: #d9dbea;
+  --paper: #f6f7fb;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font:
+    1rem/1.55 "Segoe UI",
+    Arial,
+    sans-serif;
+}
+h1,
+h2,
+.brand,
+.wordmark {
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+h1,
+.wordmark {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+h2 {
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+button,
+input {
+  font: inherit;
+}
+button {
+  background: var(--navy);
+  color: white;
+  border: 0;
+  border-radius: 5px;
+  padding: 0.65rem 1.2rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+a {
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+:focus-visible {
+  outline: 3px solid #5050cc;
+  outline-offset: 3px;
+}
+.signin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100svh;
+}
+.identity,
+aside {
+  background: var(--navy);
+  color: white;
+}
+.identity {
+  padding: clamp(2rem, 6vw, 6rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+  border-bottom: 8px solid #7777c3;
+}
+.cross {
+  font-size: 4rem;
+  line-height: 1;
+  color: #ffffff;
+}
+.wordmark {
+  margin-bottom: 0.7rem;
+}
+.formpane {
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: white;
+}
+.formpane form {
+  width: min(25rem, 100%);
+}
+.muted,
+dt {
+  color: #50536d;
+}
+label {
+  display: block;
+  margin: 1rem 0;
+  font-weight: 600;
+}
+input {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.7rem;
+  border: 1px solid #8386a1;
+  border-radius: 4px;
+}
+.formpane button {
+  width: 100%;
+  margin-top: 0.6rem;
+}
+.alert {
+  padding: 0.75rem;
+  background: #fbece7;
+  color: #872b20;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: 16rem minmax(0, 1fr);
+  min-height: 100svh;
+}
+aside {
+  padding: 2rem 1.5rem;
+}
+.brand {
+  font:
+    1.6rem Georgia,
+    serif;
+}
+.brand small {
+  display: block;
+  font:
+    0.85rem/2 "Segoe UI",
+    sans-serif;
+}
+nav {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+nav a {
+  color: white;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #5e6097;
+  border-radius: 4px;
+  text-decoration: none;
+}
+nav a:hover {
+  background: #303080;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  background: white;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--line);
+}
+.secondary {
+  background: white;
+  color: var(--navy);
+  border: 1px solid var(--line);
+}
+.content {
+  padding: clamp(1.2rem, 4vw, 4rem);
+}
+.panel {
+  max-width: 48rem;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+.panel p,
+.panel dd {
+  margin: 0.5rem 0 1.25rem;
+}
+.panel dd {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 720px) {
+  .signin,
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  .signin {
+    grid-template-rows: auto 1fr;
+  }
+  .identity {
+    padding: 2rem;
+    gap: 1rem;
+  }
+  .cross {
+    font-size: 2rem;
+  }
+  .formpane {
+    align-items: start;
+    padding: 2rem 1.4rem;
+  }
+  .workspace {
+    display: block;
+  }
+  aside {
+    padding: 1rem;
+  }
+  nav {
+    display: flex;
+    margin-top: 1rem;
+  }
+  header {
+    padding: 0.7rem 1rem;
+  }
+}
+.title-row,
+.commands,
+.filters,
+.pages {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.title-row {
+  justify-content: space-between;
+  margin: 1rem 0 1.5rem;
+}
+.title-row h1 {
+  overflow-wrap: anywhere;
+}
+.page-title {
+  margin-top: 1rem;
+}
+.action {
+  background: var(--navy);
+  color: white;
+  text-decoration: none;
+  padding: 0.65rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+}
+.record {
+  max-width: 36rem;
+}
+.record label:first-child {
+  margin-top: 0;
+}
+.commands {
+  margin-top: 1.5rem;
+}
+.notice {
+  margin: 1rem 0;
+  color: var(--navy);
+}
+.directory {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  min-width: 0;
+}
+.filters,
+.pages,
+.empty {
+  padding: 1rem 1.25rem;
+}
+.filters {
+  align-items: end;
+  border-bottom: 1px solid var(--line);
+}
+.filters label {
+  margin: 0;
+}
+.filters input {
+  min-width: min(17rem, 100%);
+}
+select {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  border: 1px solid #8386a1;
+  border-radius: 4px;
+  background: white;
+  padding: 0.7rem;
+  font: inherit;
+}
+.table-scroll {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+th,
+td {
+  padding: 0.8rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+th {
+  background: #f2f3fa;
+  color: #414562;
+  font-size: 0.9rem;
+}
+.pill {
+  background: #e8e9fb;
+  color: #30306f;
+  border-radius: 1rem;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.88rem;
+}
+.pill.off {
+  background: #eee;
+  color: #454654;
+}
+.pages {
+  color: #4a4c68;
+}
+.workspace > div {
+  min-width: 0;
+}
+@media (max-width: 720px) {
+  nav {
+    flex-wrap: wrap;
+  }
+  .filters {
+    align-items: stretch;
+  }
+  .filters label:first-child {
+    width: 100%;
+  }
+  .filters button {
+    align-self: end;
+  }
+  .table-scroll table {
+    min-width: 34rem;
+  }
+  .action {
+    font-size: 0.95rem;
+  }
+}
+@media print {
+  aside,
+  header,
+  .no-print,
+  .commands {
+    display: none !important;
+  }
+  .workspace {
+    display: block;
+  }
+  .content {
+    padding: 0;
+  }
+  .receipt {
+    border: 0;
+    max-width: none;
+  }
+  body {
+    background: white;
+  }
+}
+.allocation {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.seal {
+  border-radius: 50%;
+  object-fit: contain;
+  margin-bottom: 0.7rem;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.method-row,
+.audit-row {
+  padding: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.method-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.directory h2 {
+  padding: 1rem;
+}
+summary {
+  cursor: pointer;
+}
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.workspace .directory {
+  margin-top: 1rem;
+}
+td,
+dd {
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 720px) {
+  aside .seal {
+    width: 44px;
+    height: 44px;
+    float: left;
+    margin-right: 0.7rem;
+  }
+  aside nav {
+    clear: both;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 4px;
+  }
+  aside nav a {
+    white-space: nowrap;
+  }
+  .identity .seal {
+    width: 88px;
+    height: 88px;
+  }
+}
+@media print {
+  .seal {
+    display: block;
+  }
+  .panel,
+  .directory {
+    break-inside: auto;
+  }
+  .table-scroll {
+    overflow: visible;
+  }
+  th,
+  td {
+    padding: 0.3rem;
+  }
+  .summary-grid {
+    display: flex;
+  }
+}

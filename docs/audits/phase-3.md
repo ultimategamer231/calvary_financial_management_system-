@@ -1,0 +1,4 @@
+# Collection controls
+The posting RPC checks the active staff assignment, locks the submission key, verifies category and member eligibility, checks integer allocation totals and writes the receipt within a single transaction. Corrections void and replace together. Staff have read-only ledger table grants. Original category, payer, currency, officer and method labels stay on the receipt. Receipt numbers can have gaps. Printable HTML and a separate PDF download share database values.
+
+A rollback-only local test exercised posting, replay and void. The clean-runner suite also exercises concurrent identical requests, mismatched replay, replacement rollback, two staff identities, split guest receipts, PDF output and responsive layouts. Financial data is fictional. Dues allocation and period reports are checked in the following phases.
