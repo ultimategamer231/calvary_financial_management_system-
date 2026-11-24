@@ -65,7 +65,7 @@ export async function uploadEvidence(
   const r = await db.storage
     .from("expense-evidence")
     .upload(
-      id + "/" + user.id + "~" + crypto.randomUUID() + "~" + name,
+      id + "/" + user.id + "_" + crypto.randomUUID() + "_" + name,
       bytes,
       { contentType: type, upsert: false },
     );

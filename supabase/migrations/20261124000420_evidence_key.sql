@@ -1,0 +1,1 @@
+alter policy expense_evidence_add on storage.objects with check(bucket_id='expense-evidence' and (select public.is_staff()) and exists(select 1 from public.expenses e where e.id::text=(storage.foldername(name))[1]) and left(storage.filename(name),37)=auth.uid()::text||'_');

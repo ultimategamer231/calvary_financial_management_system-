@@ -62,7 +62,7 @@ export default async function Page({
                 encodeURIComponent(f.name)
               }
             >
-              {f.name.split("~").at(-1)}
+              {f.name.slice(74)}
             </a>
           </p>
         ))}
