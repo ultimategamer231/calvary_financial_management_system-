@@ -1,0 +1,2 @@
+# Decisions
+The owner authorizes self-auditing and proceeding after a sound plan, with GitHub pushes every phase. Use separate reviewable branches in the supplied clone. Single church, two equal finance users, independent USD/LRD ledgers, two decimal places and exact minor-unit arithmetic. No FX or public registration. Guest and anonymous allowed. Use archive, void and linked replacement to preserve history. Initial methods are cash, mobile money and bank transfer. Confirmation of unresolved dues and receipt policy remains with the church.

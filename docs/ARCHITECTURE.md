@@ -1,0 +1,6 @@
+# Architecture
+Next.js App Router server components read Supabase using the signed-in user's JWT. Server actions validate input and call database operations under that identity. Use strict TypeScript, Tailwind, and pnpm with a committed lockfile. Keep auth cookies server-managed with Supabase SSR session refresh. Route checks give friendly redirects. PostgreSQL checks active staff membership on each sensitive operation, including storage access and reads through security-invoker views.
+
+Lock authorization to two named slots keyed to unique Auth UUIDs. Restrict slot provisioning to a trusted operator. Replacement revokes the old identity's access before binding the new one. Public signup disabled. Keep administrative credentials outside the web app. Definer functions must set search_path and have explicit execute grants. Use audit triggers, no client writes to ledger or audit tables, private object keys, bounded file size/type. Capture fictional fixtures independently of development schema.
+
+Business dates use Africa/Monrovia, stored as dates. Store action timestamps as timestamptz. Reports filter business dates inclusively and display original currency. CSV must neutralize spreadsheet formula injection. Print/PDF uses a dedicated receipt/statement layout.
