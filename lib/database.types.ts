@@ -104,6 +104,28 @@ export type Database = {
         };
         Relationships: [];
       };
+      church_profile: {
+        Row: {
+          address: string;
+          id: boolean;
+          name: string;
+          phone: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          address?: string;
+          id?: boolean;
+          name: string;
+          phone?: string;
+        };
+        Update: {
+          address?: string;
+          id?: boolean;
+          name?: string;
+          phone?: string;
+        };
+        Relationships: [];
+      };
       collection_voids: {
         Row: {
           actor: string;
@@ -141,6 +163,9 @@ export type Database = {
         Row: {
           actor: string;
           business_date: string;
+          church_address: string;
+          church_name: string;
+          church_phone: string;
           created_at: string;
           currency: string;
           id: string;
@@ -161,6 +186,9 @@ export type Database = {
         Insert: {
           actor: string;
           business_date: string;
+          church_address?: string;
+          church_name?: string;
+          church_phone?: string;
           created_at?: string;
           currency: string;
           id?: string;
@@ -180,6 +208,9 @@ export type Database = {
         Update: {
           actor?: string;
           business_date?: string;
+          church_address?: string;
+          church_name?: string;
+          church_phone?: string;
           created_at?: string;
           currency?: string;
           id?: string;
@@ -521,6 +552,43 @@ export type Database = {
         };
         Relationships: [];
       };
+      settings_events: {
+        Row: {
+          action: string;
+          actor: string;
+          after_record: NonNullable<Json>;
+          before_record: Json | null;
+          entity: string;
+          id: number;
+          occurred_at: string;
+          officer: string;
+          record_key: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          action: string;
+          actor: string;
+          after_record: NonNullable<Json>;
+          before_record?: Json | null;
+          entity: string;
+          id?: never;
+          occurred_at?: string;
+          officer: string;
+          record_key: string;
+        };
+        Update: {
+          action?: string;
+          actor?: string;
+          after_record?: NonNullable<Json>;
+          before_record?: Json | null;
+          entity?: string;
+          id?: never;
+          occurred_at?: string;
+          officer?: string;
+          record_key?: string;
+        };
+        Relationships: [];
+      };
       staff_assignment_history: {
         Row: {
           assigned_user: string | null;
@@ -589,6 +657,19 @@ export type Database = {
         };
         Relationships: [];
       };
+      audit_log: {
+        Row: {
+          action: string | null;
+          actor: string | null;
+          after_record: Json | null;
+          before_record: Json | null;
+          entity: string | null;
+          occurred_at: string | null;
+          record_key: string | null;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
       dues_balances: {
         Row: {
           actor: string;
@@ -632,8 +713,34 @@ export type Database = {
           },
         ];
       };
+      movement_lines: {
+        Row: {
+          amount: number | null;
+          business_date: string | null;
+          category: string | null;
+          created_at: string | null;
+          currency: string | null;
+          kind: string | null;
+          line_id: string | null;
+          member_id: string | null;
+          method: string | null;
+          party: string | null;
+          project_id: string | null;
+          record_id: string | null;
+          reference: string | null;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
     };
     Functions: {
+      account_roster: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          email: string;
+          slot: string;
+        }[];
+      };
       assign_dues: {
         Args: { batch_key: string; entry: Json };
         Returns: undefined;
@@ -643,6 +750,7 @@ export type Database = {
         Returns: undefined;
       };
       current_officer: { Args: Record<PropertyKey, never>; Returns: string };
+      finance_report: { Args: { filters: Json }; Returns: Json };
       find_members: {
         Args: { term: string };
         Returns: {

@@ -36,6 +36,11 @@ export default async function Member({
           </>
         )}
       </dl>
+      <p>
+        <Link href={"/members/" + member.id + "/statement"}>
+          Contribution history and printable statement
+        </Link>
+      </p>
     </>
   );
 }

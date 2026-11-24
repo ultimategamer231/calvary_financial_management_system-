@@ -10,6 +10,10 @@ export async function GET(
   await requireStaff();
   const r = await receipt((await params).id);
   const doc = new PDFDocument({ size: "A4", margin: 48 });
+  doc
+    .image(path.join(process.cwd(), "public/church-seal.jpeg"), { width: 72 })
+    .moveDown()
+    .fillColor("#08085d");
   const chunks: Buffer[] = [];
   const complete = new Promise<Buffer>((ok, fail) => {
     doc.on("data", (c) => chunks.push(c));
@@ -24,7 +28,9 @@ export async function GET(
       ),
     )
     .fontSize(20)
-    .text("Calvary Baptist Church")
+    .text(r.church_name)
+    .fontSize(12)
+    .text([r.church_address, r.church_phone].filter(Boolean).join(" · "))
     .moveDown()
     .text("Receipt " + r.receipt)
     .fontSize(12);

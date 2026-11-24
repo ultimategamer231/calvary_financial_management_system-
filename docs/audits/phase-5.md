@@ -1,0 +1,4 @@
+# Reporting and settings audit
+All movement reports read a single database snapshot, exclude voided originals, group allocation labels and sum integer minor units within original currency. Member statements use the same reader and CSV exports share its filters. Current outstanding dues reflect active payments and are filtered by due date. Staff may change receipt header details for future collections. Issued receipts preserve the header stored at posting. The pilot starts with the approved church name and supplied seal only.
+
+The two-account replacement procedure uses a trusted operator and an expected previous UUID. The app has no service-role key. Staging must still verify real SMTP delivery and recovery redirects. The browser fixture checks separate USD and LRD totals, a filtered statement, CSV formula protection, profile audit and original receipt header retention.

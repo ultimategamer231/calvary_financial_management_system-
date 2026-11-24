@@ -1,3 +1,5 @@
+import { Seal } from "@/app/seal";
+import Link from "next/link";
 import { signIn } from "../actions";
 export default async function Login({
   searchParams,
@@ -8,9 +10,7 @@ export default async function Login({
   return (
     <main className="signin">
       <section className="identity">
-        <span className="cross" aria-hidden="true">
-          ✝
-        </span>
+        <Seal size={160} />
         <div>
           <p className="wordmark">Calvary Baptist Church</p>
           <p>Financial Management System</p>
@@ -48,6 +48,9 @@ export default async function Login({
             />
           </label>
           <button>Sign in</button>
+          <p>
+            <Link href="/recover">Forgot password?</Link>
+          </p>
         </form>
       </section>
     </main>

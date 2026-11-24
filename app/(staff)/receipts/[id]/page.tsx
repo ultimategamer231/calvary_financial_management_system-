@@ -1,3 +1,4 @@
+import { Seal } from "@/app/seal";
 import Link from "next/link";
 import { receipt } from "@/lib/collections";
 import { money } from "@/lib/money";
@@ -11,7 +12,10 @@ export default async function Page({
   return (
     <>
       <article className="panel receipt">
-        <p>Calvary Baptist Church</p>
+        <Seal size={80} />
+        <p>{r.church_name}</p>
+        {r.church_address && <p>{r.church_address}</p>}
+        {r.church_phone && <p>{r.church_phone}</p>}
         <h1>Receipt {r.receipt}</h1>
         {r.collection_voids && (
           <p className="alert">

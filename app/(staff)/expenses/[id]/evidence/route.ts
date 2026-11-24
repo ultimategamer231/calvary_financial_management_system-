@@ -14,8 +14,7 @@ export async function GET(
   return new Response(r.data, {
     headers: {
       "Content-Type": "application/octet-stream",
-      "Content-Disposition":
-        'attachment; filename="' + file.slice(74) + '"',
+      "Content-Disposition": 'attachment; filename="' + file.slice(74) + '"',
       "Cache-Control": "private, no-store",
     },
   });

@@ -1,3 +1,4 @@
+import { Seal } from "@/app/seal";
 import Link from "next/link";
 import { requireStaff } from "@/lib/session";
 import { signOut } from "../actions";
@@ -11,6 +12,7 @@ export default async function Workspace({
   return (
     <div className="workspace">
       <aside>
+        <Seal size={70} />
         <div className="brand">
           Calvary Baptist Church<small>Financial Management System</small>
         </div>
@@ -21,6 +23,9 @@ export default async function Workspace({
           <Link href="/expenses">Expenses</Link>
           <Link href="/members">Members</Link>
           <Link href="/categories">Payment categories</Link>
+          <Link href="/reports">Reports</Link>
+          <Link href="/audit">Audit log</Link>
+          <Link href="/settings">Settings</Link>
           <Link href="/account">My account</Link>
         </nav>
       </aside>

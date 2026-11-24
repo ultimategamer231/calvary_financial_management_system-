@@ -31,6 +31,7 @@ jobs:
           node scripts/check-directory.mjs
           node scripts/check-collections.mjs
           node scripts/check-dues-expenses.mjs
+          node scripts/check-reports.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

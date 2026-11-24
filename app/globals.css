@@ -1,9 +1,9 @@
 @import "tailwindcss";
 :root {
-  --forest: #124a38;
-  --ink: #19372c;
-  --line: #d4ded7;
-  --paper: #f5f7f4;
+  --navy: #08085d;
+  --ink: #191b38;
+  --line: #d9dbea;
+  --paper: #f6f7fb;
 }
 * {
   box-sizing: border-box;
@@ -38,7 +38,7 @@ input {
   font: inherit;
 }
 button {
-  background: var(--forest);
+  background: var(--navy);
   color: white;
   border: 0;
   border-radius: 5px;
@@ -47,12 +47,12 @@ button {
   font-weight: 600;
 }
 a {
-  color: var(--forest);
+  color: var(--navy);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 :focus-visible {
-  outline: 3px solid #a76b11;
+  outline: 3px solid #5050cc;
   outline-offset: 3px;
 }
 .signin {
@@ -62,7 +62,7 @@ a {
 }
 .identity,
 aside {
-  background: var(--forest);
+  background: var(--navy);
   color: white;
 }
 .identity {
@@ -71,12 +71,12 @@ aside {
   flex-direction: column;
   justify-content: center;
   gap: 2rem;
-  border-bottom: 8px solid #d3af68;
+  border-bottom: 8px solid #7777c3;
 }
 .cross {
   font-size: 4rem;
   line-height: 1;
-  color: #eed59e;
+  color: #ffffff;
 }
 .wordmark {
   margin-bottom: 0.7rem;
@@ -92,7 +92,7 @@ aside {
 }
 .muted,
 dt {
-  color: #4a6155;
+  color: #50536d;
 }
 label {
   display: block;
@@ -104,7 +104,7 @@ input {
   width: 100%;
   margin-top: 0.35rem;
   padding: 0.7rem;
-  border: 1px solid #899b91;
+  border: 1px solid #8386a1;
   border-radius: 4px;
 }
 .formpane button {
@@ -143,12 +143,12 @@ nav {
 nav a {
   color: white;
   padding: 0.55rem 0.65rem;
-  border: 1px solid #63907b;
+  border: 1px solid #5e6097;
   border-radius: 4px;
   text-decoration: none;
 }
 nav a:hover {
-  background: #28634d;
+  background: #303080;
 }
 header {
   display: flex;
@@ -161,7 +161,7 @@ header {
 }
 .secondary {
   background: white;
-  color: var(--forest);
+  color: var(--navy);
   border: 1px solid var(--line);
 }
 .content {
@@ -235,7 +235,7 @@ header {
   margin-top: 1rem;
 }
 .action {
-  background: var(--forest);
+  background: var(--navy);
   color: white;
   text-decoration: none;
   padding: 0.65rem 1rem;
@@ -253,7 +253,7 @@ header {
 }
 .notice {
   margin: 1rem 0;
-  color: var(--forest);
+  color: var(--navy);
 }
 .directory {
   background: white;
@@ -280,7 +280,7 @@ select {
   display: block;
   width: 100%;
   margin-top: 0.35rem;
-  border: 1px solid #899b91;
+  border: 1px solid #8386a1;
   border-radius: 4px;
   background: white;
   padding: 0.7rem;
@@ -301,23 +301,23 @@ td {
   overflow-wrap: anywhere;
 }
 th {
-  background: #f4f7f4;
-  color: #3c5146;
+  background: #f2f3fa;
+  color: #414562;
   font-size: 0.9rem;
 }
 .pill {
-  background: #e2f2e8;
-  color: #225735;
+  background: #e8e9fb;
+  color: #30306f;
   border-radius: 1rem;
   padding: 0.2rem 0.65rem;
   font-size: 0.88rem;
 }
 .pill.off {
   background: #eee;
-  color: #424744;
+  color: #454654;
 }
 .pages {
-  color: #435b4f;
+  color: #4a4c68;
 }
 .workspace > div {
   min-width: 0;
@@ -366,4 +366,84 @@ th {
 .allocation {
   padding: 0.5rem 0;
   border-bottom: 1px solid var(--line);
+}
+.seal {
+  border-radius: 50%;
+  object-fit: contain;
+  margin-bottom: 0.7rem;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.method-row,
+.audit-row {
+  padding: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.method-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.directory h2 {
+  padding: 1rem;
+}
+summary {
+  cursor: pointer;
+}
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.workspace .directory {
+  margin-top: 1rem;
+}
+td,
+dd {
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 720px) {
+  aside .seal {
+    width: 44px;
+    height: 44px;
+    float: left;
+    margin-right: 0.7rem;
+  }
+  aside nav {
+    clear: both;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 4px;
+  }
+  aside nav a {
+    white-space: nowrap;
+  }
+  .identity .seal {
+    width: 88px;
+    height: 88px;
+  }
+}
+@media print {
+  .seal {
+    display: block;
+  }
+  .panel,
+  .directory {
+    break-inside: auto;
+  }
+  .table-scroll {
+    overflow: visible;
+  }
+  th,
+  td {
+    padding: 0.3rem;
+  }
+  .summary-grid {
+    display: flex;
+  }
 }
