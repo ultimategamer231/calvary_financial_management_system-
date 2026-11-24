@@ -171,6 +171,7 @@ async function verify() {
   await admin
     .getByRole("link", { name: "Edit " + category, exact: true })
     .click();
+  await admin.waitForURL("**/categories/*/edit");
   const cid = new URL(admin.url()).pathname.split("/")[2];
   await admin.getByLabel("Category name").fill("budget support");
   await admin.getByRole("button", { name: "Save category" }).click();
