@@ -1,0 +1,217 @@
+@import "tailwindcss";
+:root {
+  --forest: #124a38;
+  --ink: #19372c;
+  --line: #d4ded7;
+  --paper: #f5f7f4;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font:
+    1rem/1.55 "Segoe UI",
+    Arial,
+    sans-serif;
+}
+h1,
+h2,
+.brand,
+.wordmark {
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+h1,
+.wordmark {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+h2 {
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+button,
+input {
+  font: inherit;
+}
+button {
+  background: var(--forest);
+  color: white;
+  border: 0;
+  border-radius: 5px;
+  padding: 0.65rem 1.2rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+a {
+  color: var(--forest);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+:focus-visible {
+  outline: 3px solid #a76b11;
+  outline-offset: 3px;
+}
+.signin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100svh;
+}
+.identity,
+aside {
+  background: var(--forest);
+  color: white;
+}
+.identity {
+  padding: clamp(2rem, 6vw, 6rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+  border-bottom: 8px solid #d3af68;
+}
+.cross {
+  font-size: 4rem;
+  line-height: 1;
+  color: #eed59e;
+}
+.wordmark {
+  margin-bottom: 0.7rem;
+}
+.formpane {
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: white;
+}
+.formpane form {
+  width: min(25rem, 100%);
+}
+.muted,
+dt {
+  color: #4a6155;
+}
+label {
+  display: block;
+  margin: 1rem 0;
+  font-weight: 600;
+}
+input {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.7rem;
+  border: 1px solid #899b91;
+  border-radius: 4px;
+}
+.formpane button {
+  width: 100%;
+  margin-top: 0.6rem;
+}
+.alert {
+  padding: 0.75rem;
+  background: #fbece7;
+  color: #872b20;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: 16rem minmax(0, 1fr);
+  min-height: 100svh;
+}
+aside {
+  padding: 2rem 1.5rem;
+}
+.brand {
+  font:
+    1.6rem Georgia,
+    serif;
+}
+.brand small {
+  display: block;
+  font:
+    0.85rem/2 "Segoe UI",
+    sans-serif;
+}
+nav {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+nav a {
+  color: white;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #63907b;
+  border-radius: 4px;
+  text-decoration: none;
+}
+nav a:hover {
+  background: #28634d;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  background: white;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--line);
+}
+.secondary {
+  background: white;
+  color: var(--forest);
+  border: 1px solid var(--line);
+}
+.content {
+  padding: clamp(1.2rem, 4vw, 4rem);
+}
+.panel {
+  max-width: 48rem;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+.panel p,
+.panel dd {
+  margin: 0.5rem 0 1.25rem;
+}
+.panel dd {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 720px) {
+  .signin,
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  .signin {
+    grid-template-rows: auto 1fr;
+  }
+  .identity {
+    padding: 2rem;
+    gap: 1rem;
+  }
+  .cross {
+    font-size: 2rem;
+  }
+  .formpane {
+    align-items: start;
+    padding: 2rem 1.4rem;
+  }
+  .workspace {
+    display: block;
+  }
+  aside {
+    padding: 1rem;
+  }
+  nav {
+    display: flex;
+    margin-top: 1rem;
+  }
+  header {
+    padding: 0.7rem 1rem;
+  }
+}

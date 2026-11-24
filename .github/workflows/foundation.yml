@@ -1,0 +1,34 @@
+name: Foundation checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm run db:start > /tmp/calvary-stack.log 2>&1
+      - run: node scripts/configure-local.mjs
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Exercise staff access in Chromium
+        run: |
+          pnpm start --port 3107 > /tmp/calvary-next.log 2>&1 &
+          for i in {1..45}; do
+            if curl -fsS http://localhost:3107/login > /dev/null; then break; fi
+            sleep 2
+          done
+          pnpm test:foundation
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: foundation-screenshots
+          path: test-results/*.png
