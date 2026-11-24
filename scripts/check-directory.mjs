@@ -192,7 +192,12 @@ async function verify() {
   await admin
     .getByRole("link", { name: "Edit " + category + " Revised", exact: true })
     .click();
-  await admin.getByLabel("Status").selectOption("active");
+  await admin
+    .getByRole("heading", { name: "Edit category", exact: true })
+    .waitFor();
+  const statusField = admin.getByLabel("Status");
+  assert.equal(await statusField.inputValue(), "inactive");
+  await statusField.selectOption("active");
   await admin.getByRole("button", { name: "Save category" }).click();
   await admin.getByText("Category saved.").waitFor();
   const active = await options();
