@@ -77,7 +77,12 @@ export default async function Page({
           ))}
           <button>Filter</button>
         </form>
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          role="region"
+          aria-label="contributions table"
+          tabIndex={0}
+        >
           <table>
             <thead>
               <tr>

@@ -42,7 +42,12 @@ export default async function Page({
           </label>
           <button>Filter</button>
         </form>
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          role="region"
+          aria-label="dues table"
+          tabIndex={0}
+        >
           <table>
             <thead>
               <tr>
