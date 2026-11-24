@@ -9,3 +9,5 @@ The owner authorizes self-auditing and proceeding after a sound plan, with GitHu
 The owner authorized automatic continuation through tested phases and a verified GitHub push after each. Church pilot sign-off, production authorization and paid cloud provisioning remain owner actions.
 
 Owner approved church name only and fictional pilot records. Use the supplied seal and its navy-and-white palette across the UI and receipts. Preserve issued receipt headers as snapshots. Keep all deployment local until church-controlled Supabase and Vercel staging access is provided. Current-balance dues reports use obligation due dates; ledger reports use transaction business dates. CSV financial fields are decimal strings and formula-like user text is escaped.
+
+Restore rehearsals run only on fictional data in a separate scratch database and isolated storage directory. Require private attachment bytes in CI. Preserve the original demo database and both staff accounts.

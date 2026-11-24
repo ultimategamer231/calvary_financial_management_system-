@@ -13,6 +13,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: node --experimental-strip-types scripts/check-money.mjs
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm run db:start > /tmp/calvary-stack.log 2>&1
@@ -32,6 +33,8 @@ jobs:
           node scripts/check-collections.mjs
           node scripts/check-dues-expenses.mjs
           node scripts/check-reports.mjs
+          node scripts/check-pilot.mjs
+          node scripts/check-restore.mjs --require-evidence
       - uses: actions/upload-artifact@v4
         if: always()
         with:

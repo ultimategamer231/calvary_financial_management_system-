@@ -1,6 +1,9 @@
-# Owner decisions
-| Decision | Proposed treatment and impact | Needed by |
-|---|---|---|
-| Historical records | Inspect and reconcile sanitized sample before planning any import. Start pilot with fictional fixtures. | Pilot |
-| Receipt header, categories and dates | Confirm actual church contact details, printable header, category groupings and fiscal calendar. Default reporting uses calendar month and custom range. | Pilot |
-| Operations | Confirm designated account operator, backup owner, region, provider plan and authorization for spend. | Staging |
+# Release decisions
+The owner approved the church name and supplied seal, fictional pilot data, separate USD and LRD reporting, the CBC receipt series and the dues allocation rules. Local testing can proceed without further approval.
+
+| Remaining item | Needed when |
+|---|---|
+| Church-owned staging project identifiers, region, budget, operator and backup owner | Connecting Supabase and Vercel |
+| Verified staff emails, recovery SMTP and retention policy | Staging smoke and recovery rehearsal |
+| Approved production contact details, category groupings and any historical import with reconciled source records | Before using real records |
+| Acceptance of pilot results and explicit production go-live authorization | Production release |
