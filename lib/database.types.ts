@@ -9,6 +9,56 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      allocations: {
+        Row: {
+          amount: number;
+          category_id: string;
+          category_label: string;
+          collection_id: string;
+          currency: string;
+          id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          amount: number;
+          category_id: string;
+          category_label: string;
+          collection_id: string;
+          currency: string;
+          id?: string;
+        };
+        Update: {
+          amount?: number;
+          category_id?: string;
+          category_label?: string;
+          collection_id?: string;
+          currency?: string;
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "allocations_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "active_categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "allocations_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "allocations_collection_id_fkey";
+            columns: ["collection_id"];
+            isOneToOne: false;
+            referencedRelation: "collections";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       categories: {
         Row: {
           active: boolean;
@@ -36,6 +86,115 @@ export type Database = {
           revision?: number;
         };
         Relationships: [];
+      };
+      collection_voids: {
+        Row: {
+          actor: string;
+          collection_id: string;
+          created_at: string;
+          officer: string;
+          reason: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          actor: string;
+          collection_id: string;
+          created_at?: string;
+          officer: string;
+          reason: string;
+        };
+        Update: {
+          actor?: string;
+          collection_id?: string;
+          created_at?: string;
+          officer?: string;
+          reason?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "collection_voids_collection_id_fkey";
+            columns: ["collection_id"];
+            isOneToOne: true;
+            referencedRelation: "collections";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      collections: {
+        Row: {
+          actor: string;
+          business_date: string;
+          created_at: string;
+          currency: string;
+          id: string;
+          member_id: string | null;
+          method: string;
+          notes: string;
+          officer: string;
+          payer: string;
+          payer_kind: string;
+          payload: NonNullable<Json>;
+          receipt: string;
+          reference: string;
+          replaces: string | null;
+          request_key: string;
+          total: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          actor: string;
+          business_date: string;
+          created_at?: string;
+          currency: string;
+          id?: string;
+          member_id?: string | null;
+          method: string;
+          notes: string;
+          officer: string;
+          payer: string;
+          payer_kind: string;
+          payload: NonNullable<Json>;
+          receipt?: string;
+          reference: string;
+          replaces?: string | null;
+          request_key: string;
+          total: number;
+        };
+        Update: {
+          actor?: string;
+          business_date?: string;
+          created_at?: string;
+          currency?: string;
+          id?: string;
+          member_id?: string | null;
+          method?: string;
+          notes?: string;
+          officer?: string;
+          payer?: string;
+          payer_kind?: string;
+          payload?: NonNullable<Json>;
+          receipt?: string;
+          reference?: string;
+          replaces?: string | null;
+          request_key?: string;
+          total?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "collections_member_id_fkey";
+            columns: ["member_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "collections_replaces_fkey";
+            columns: ["replaces"];
+            isOneToOne: true;
+            referencedRelation: "collections";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       directory_events: {
         Row: {
@@ -102,6 +261,22 @@ export type Database = {
           name?: string;
           phone?: string | null;
           revision?: number;
+        };
+        Relationships: [];
+      };
+      payment_methods: {
+        Row: {
+          active: boolean;
+          name: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          active?: boolean;
+          name: string;
+        };
+        Update: {
+          active?: boolean;
+          name?: string;
         };
         Relationships: [];
       };
@@ -175,6 +350,7 @@ export type Database = {
       };
     };
     Functions: {
+      current_officer: { Args: Record<PropertyKey, never>; Returns: string };
       find_members: {
         Args: { term: string };
         Returns: {
@@ -194,6 +370,14 @@ export type Database = {
         };
       };
       is_staff: { Args: Record<PropertyKey, never>; Returns: boolean };
+      post_collection: {
+        Args: { entry: Json; request_key_input: string };
+        Returns: string;
+      };
+      void_collection: {
+        Args: { explanation: string; target: string };
+        Returns: undefined;
+      };
     };
     Enums: {
       [_ in never]: never;

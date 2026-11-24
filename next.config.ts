@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 const config: NextConfig = {
   poweredByHeader: false,
+  serverExternalPackages: ["pdfkit"],
+  outputFileTracingIncludes: {
+    "/receipts/*/pdf": [
+      "./node_modules/@fontsource/noto-sans/files/noto-sans-latin-400-normal.woff",
+    ],
+  },
   async headers() {
     return [
       {

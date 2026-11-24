@@ -5,3 +5,5 @@ The owner authorizes self-auditing and proceeding after a sound plan, with GitHu
 
 - Start a new CBC-prefixed receipt sequence. Issue one itemized receipt per posted collection. A correction issues a new receipt linked to the original and preserves both numbers.
 - Group assignments create one individual obligation per member in the group snapshot at assignment time. Reject any allocation above that obligation's outstanding balance. Staff may explicitly enter a separate voluntary allocation for the excess.
+
+The owner authorized automatic continuation through tested phases and a verified GitHub push after each. Church pilot sign-off, production authorization and paid cloud provisioning remain owner actions.

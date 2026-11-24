@@ -342,3 +342,28 @@ th {
     font-size: 0.95rem;
   }
 }
+@media print {
+  aside,
+  header,
+  .no-print,
+  .commands {
+    display: none !important;
+  }
+  .workspace {
+    display: block;
+  }
+  .content {
+    padding: 0;
+  }
+  .receipt {
+    border: 0;
+    max-width: none;
+  }
+  body {
+    background: white;
+  }
+}
+.allocation {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+}

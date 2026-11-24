@@ -29,6 +29,7 @@ jobs:
           pnpm test:foundation
           node scripts/seed-local.mjs
           node scripts/check-directory.mjs
+          node scripts/check-collections.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
