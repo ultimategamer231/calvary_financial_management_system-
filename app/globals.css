@@ -215,3 +215,130 @@ header {
     padding: 0.7rem 1rem;
   }
 }
+.title-row,
+.commands,
+.filters,
+.pages {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.title-row {
+  justify-content: space-between;
+  margin: 1rem 0 1.5rem;
+}
+.title-row h1 {
+  overflow-wrap: anywhere;
+}
+.page-title {
+  margin-top: 1rem;
+}
+.action {
+  background: var(--forest);
+  color: white;
+  text-decoration: none;
+  padding: 0.65rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+}
+.record {
+  max-width: 36rem;
+}
+.record label:first-child {
+  margin-top: 0;
+}
+.commands {
+  margin-top: 1.5rem;
+}
+.notice {
+  margin: 1rem 0;
+  color: var(--forest);
+}
+.directory {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  min-width: 0;
+}
+.filters,
+.pages,
+.empty {
+  padding: 1rem 1.25rem;
+}
+.filters {
+  align-items: end;
+  border-bottom: 1px solid var(--line);
+}
+.filters label {
+  margin: 0;
+}
+.filters input {
+  min-width: min(17rem, 100%);
+}
+select {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  border: 1px solid #899b91;
+  border-radius: 4px;
+  background: white;
+  padding: 0.7rem;
+  font: inherit;
+}
+.table-scroll {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+th,
+td {
+  padding: 0.8rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+th {
+  background: #f4f7f4;
+  color: #3c5146;
+  font-size: 0.9rem;
+}
+.pill {
+  background: #e2f2e8;
+  color: #225735;
+  border-radius: 1rem;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.88rem;
+}
+.pill.off {
+  background: #eee;
+  color: #424744;
+}
+.pages {
+  color: #435b4f;
+}
+.workspace > div {
+  min-width: 0;
+}
+@media (max-width: 720px) {
+  nav {
+    flex-wrap: wrap;
+  }
+  .filters {
+    align-items: stretch;
+  }
+  .filters label:first-child {
+    width: 100%;
+  }
+  .filters button {
+    align-self: end;
+  }
+  .table-scroll table {
+    min-width: 34rem;
+  }
+  .action {
+    font-size: 0.95rem;
+  }
+}

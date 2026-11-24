@@ -1,6 +1,6 @@
 # Calvary Baptist Church Financial Management System
 
-A private staff workspace for Calvary Baptist Church. Phase 1 delivers email/password sign-in, an authenticated dashboard shell, account details, and two database-enforced staff assignments. The financial modules follow in the [roadmap](docs/ROADMAP.md).
+A private staff workspace for Calvary Baptist Church. Phase 1 delivers email/password sign-in, an authenticated dashboard shell, account details, and two database-enforced staff assignments. Phase 2 adds the member directory and payment categories. Staff can search by name, phone or member number, edit profiles, archive or restore members, and manage category names, groups and status. Changes retain their staff attribution and prior values. The financial modules follow in the [roadmap](docs/ROADMAP.md).
 
 ## Local setup
 Install Node 22.23 or later in the 22.x series, pnpm 10.34.9, Git and Docker Desktop with Linux containers. From the repository root run:

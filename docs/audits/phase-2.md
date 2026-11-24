@@ -1,0 +1,6 @@
+# Phase 2 directory audit
+The additive migration ran on the Calvary database with both Phase 1 demo identities preserved. Local authenticated preview checks cover /members and /categories at 390 and 1280 px, document overflow and axe serious/critical findings. Screenshot output is in test-results. A rollback-only PostgreSQL transaction verified attributed member creation and archival, plus denied reads and writes for an unassigned identity.
+
+The CI directory suite runs after the foundation suite and fixture provisioning on a fresh database. It checks the exact 13 seed labels, both staff sessions, member search by each identifier, archive reason and snapshots, stale edit rejection, blocked hard deletion and direct audit deletion, case-insensitive duplicate category rejection, renaming, grouping, deactivation and reactivation. Inactive categories disappear from the active lookup while their stable ID and audited labels remain available.
+
+Member profiles expose only the member number, name, optional phone and status. Categories start ungrouped pending church classification. Contribution history, receipt label snapshots and transaction-time eligibility checks belong to the Phase 3 posting transaction. The Phase 2 migration does not introduce financial entries.

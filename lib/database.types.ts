@@ -9,6 +9,102 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      categories: {
+        Row: {
+          active: boolean;
+          group_name: string | null;
+          id: string;
+          inactive_reason: string | null;
+          name: string;
+          revision: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          active?: boolean;
+          group_name?: string | null;
+          id?: string;
+          inactive_reason?: string | null;
+          name: string;
+          revision?: number;
+        };
+        Update: {
+          active?: boolean;
+          group_name?: string | null;
+          id?: string;
+          inactive_reason?: string | null;
+          name?: string;
+          revision?: number;
+        };
+        Relationships: [];
+      };
+      directory_events: {
+        Row: {
+          action: string;
+          actor: string;
+          after_record: NonNullable<Json>;
+          before_record: Json | null;
+          entity: string;
+          id: number;
+          occurred_at: string;
+          record_id: string;
+          staff_label: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          action: string;
+          actor: string;
+          after_record: NonNullable<Json>;
+          before_record?: Json | null;
+          entity: string;
+          id?: never;
+          occurred_at?: string;
+          record_id: string;
+          staff_label: string;
+        };
+        Update: {
+          action?: string;
+          actor?: string;
+          after_record?: NonNullable<Json>;
+          before_record?: Json | null;
+          entity?: string;
+          id?: never;
+          occurred_at?: string;
+          record_id?: string;
+          staff_label?: string;
+        };
+        Relationships: [];
+      };
+      members: {
+        Row: {
+          active: boolean;
+          id: string;
+          inactive_reason: string | null;
+          member_number: string;
+          name: string;
+          phone: string | null;
+          revision: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          active?: boolean;
+          id?: string;
+          inactive_reason?: string | null;
+          member_number?: string;
+          name: string;
+          phone?: string | null;
+          revision?: number;
+        };
+        Update: {
+          active?: boolean;
+          id?: string;
+          inactive_reason?: string | null;
+          member_number?: string;
+          name?: string;
+          phone?: string | null;
+          revision?: number;
+        };
+        Relationships: [];
+      };
       staff_assignment_history: {
         Row: {
           assigned_user: string | null;
@@ -55,10 +151,49 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      active_categories: {
+        Row: {
+          group_name: string | null;
+          id: string;
+          name: string;
+          revision: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          group_name?: string | null;
+          id?: string | null;
+          name?: string | null;
+          revision?: number | null;
+        };
+        Update: {
+          group_name?: string | null;
+          id?: string | null;
+          name?: string | null;
+          revision?: number | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
-      [_ in never]: never;
+      find_members: {
+        Args: { term: string };
+        Returns: {
+          active: boolean;
+          id: string;
+          inactive_reason: string | null;
+          member_number: string;
+          name: string;
+          phone: string | null;
+          revision: number;
+        }[];
+        SetofOptions: {
+          from: "*";
+          to: "members";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
+      };
+      is_staff: { Args: Record<PropertyKey, never>; Returns: boolean };
     };
     Enums: {
       [_ in never]: never;
