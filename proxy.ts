@@ -29,6 +29,8 @@ export const config = {
     "/dashboard/:path*",
     "/receipts/:path*",
     "/contributions/:path*",
+    "/expenses/:path*",
+    "/dues/:path*",
     "/members/:path*",
     "/categories/:path*",
     "/account/:path*",

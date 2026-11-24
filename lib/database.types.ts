@@ -17,6 +17,7 @@ export type Database = {
           collection_id: string;
           currency: string;
           id: string;
+          obligation_id: string | null;
         };
         ComputedFields: never;
         Insert: {
@@ -26,6 +27,7 @@ export type Database = {
           collection_id: string;
           currency: string;
           id?: string;
+          obligation_id?: string | null;
         };
         Update: {
           amount?: number;
@@ -34,6 +36,7 @@ export type Database = {
           collection_id?: string;
           currency?: string;
           id?: string;
+          obligation_id?: string | null;
         };
         Relationships: [
           {
@@ -55,6 +58,20 @@ export type Database = {
             columns: ["collection_id"];
             isOneToOne: false;
             referencedRelation: "collections";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "allocations_obligation_id_fkey";
+            columns: ["obligation_id"];
+            isOneToOne: false;
+            referencedRelation: "dues_balances";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "allocations_obligation_id_fkey";
+            columns: ["obligation_id"];
+            isOneToOne: false;
+            referencedRelation: "obligations";
             referencedColumns: ["id"];
           },
         ];
@@ -233,6 +250,119 @@ export type Database = {
         };
         Relationships: [];
       };
+      expense_voids: {
+        Row: {
+          actor: string;
+          created_at: string;
+          expense_id: string;
+          officer: string;
+          reason: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          actor: string;
+          created_at?: string;
+          expense_id: string;
+          officer: string;
+          reason: string;
+        };
+        Update: {
+          actor?: string;
+          created_at?: string;
+          expense_id?: string;
+          officer?: string;
+          reason?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "expense_voids_expense_id_fkey";
+            columns: ["expense_id"];
+            isOneToOne: true;
+            referencedRelation: "expenses";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      expenses: {
+        Row: {
+          actor: string;
+          amount: number;
+          business_date: string;
+          category: string;
+          created_at: string;
+          currency: string;
+          description: string;
+          id: string;
+          method: string;
+          officer: string;
+          payee: string;
+          payload: NonNullable<Json>;
+          project_id: string | null;
+          project_label: string | null;
+          replaces: string | null;
+          request_key: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          actor: string;
+          amount: number;
+          business_date: string;
+          category: string;
+          created_at?: string;
+          currency: string;
+          description: string;
+          id?: string;
+          method: string;
+          officer: string;
+          payee: string;
+          payload: NonNullable<Json>;
+          project_id?: string | null;
+          project_label?: string | null;
+          replaces?: string | null;
+          request_key: string;
+        };
+        Update: {
+          actor?: string;
+          amount?: number;
+          business_date?: string;
+          category?: string;
+          created_at?: string;
+          currency?: string;
+          description?: string;
+          id?: string;
+          method?: string;
+          officer?: string;
+          payee?: string;
+          payload?: NonNullable<Json>;
+          project_id?: string | null;
+          project_label?: string | null;
+          replaces?: string | null;
+          request_key?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "expenses_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "active_categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "expenses_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "expenses_replaces_fkey";
+            columns: ["replaces"];
+            isOneToOne: true;
+            referencedRelation: "expenses";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       members: {
         Row: {
           active: boolean;
@@ -263,6 +393,117 @@ export type Database = {
           revision?: number;
         };
         Relationships: [];
+      };
+      obligation_voids: {
+        Row: {
+          actor: string;
+          created_at: string;
+          obligation_id: string;
+          officer: string;
+          reason: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          actor: string;
+          created_at?: string;
+          obligation_id: string;
+          officer: string;
+          reason: string;
+        };
+        Update: {
+          actor?: string;
+          created_at?: string;
+          obligation_id?: string;
+          officer?: string;
+          reason?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "obligation_voids_obligation_id_fkey";
+            columns: ["obligation_id"];
+            isOneToOne: true;
+            referencedRelation: "dues_balances";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "obligation_voids_obligation_id_fkey";
+            columns: ["obligation_id"];
+            isOneToOne: true;
+            referencedRelation: "obligations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      obligations: {
+        Row: {
+          actor: string;
+          amount: number;
+          batch: string;
+          category_id: string;
+          category_label: string;
+          created_at: string;
+          currency: string;
+          due_date: string;
+          group_label: string;
+          id: string;
+          member_id: string;
+          member_name: string;
+          officer: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          actor: string;
+          amount: number;
+          batch: string;
+          category_id: string;
+          category_label: string;
+          created_at?: string;
+          currency: string;
+          due_date: string;
+          group_label?: string;
+          id?: string;
+          member_id: string;
+          member_name: string;
+          officer: string;
+        };
+        Update: {
+          actor?: string;
+          amount?: number;
+          batch?: string;
+          category_id?: string;
+          category_label?: string;
+          created_at?: string;
+          currency?: string;
+          due_date?: string;
+          group_label?: string;
+          id?: string;
+          member_id?: string;
+          member_name?: string;
+          officer?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "obligations_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "active_categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "obligations_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "obligations_member_id_fkey";
+            columns: ["member_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       payment_methods: {
         Row: {
@@ -348,8 +589,59 @@ export type Database = {
         };
         Relationships: [];
       };
+      dues_balances: {
+        Row: {
+          actor: string;
+          amount: number;
+          batch: string;
+          category_id: string;
+          category_label: string;
+          created_at: string;
+          currency: string;
+          due_date: string;
+          group_label: string;
+          id: string;
+          member_id: string;
+          member_name: string;
+          officer: string;
+          outstanding: number | null;
+          paid: number | null;
+        };
+        ComputedFields: never;
+        Relationships: [
+          {
+            foreignKeyName: "obligations_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "active_categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "obligations_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "obligations_member_id_fkey";
+            columns: ["member_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Functions: {
+      assign_dues: {
+        Args: { batch_key: string; entry: Json };
+        Returns: undefined;
+      };
+      cancel_obligation: {
+        Args: { explanation: string; target: string };
+        Returns: undefined;
+      };
       current_officer: { Args: Record<PropertyKey, never>; Returns: string };
       find_members: {
         Args: { term: string };
@@ -374,7 +666,15 @@ export type Database = {
         Args: { entry: Json; request_key_input: string };
         Returns: string;
       };
+      post_expense: {
+        Args: { entry: Json; request_key_input: string };
+        Returns: string;
+      };
       void_collection: {
+        Args: { explanation: string; target: string };
+        Returns: undefined;
+      };
+      void_expense: {
         Args: { explanation: string; target: string };
         Returns: undefined;
       };

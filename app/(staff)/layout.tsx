@@ -17,6 +17,8 @@ export default async function Workspace({
         <nav aria-label="Workspace">
           <Link href="/dashboard">Dashboard</Link>
           <Link href="/contributions">Contributions</Link>
+          <Link href="/dues">Dues &amp; commitments</Link>
+          <Link href="/expenses">Expenses</Link>
           <Link href="/members">Members</Link>
           <Link href="/categories">Payment categories</Link>
           <Link href="/account">My account</Link>

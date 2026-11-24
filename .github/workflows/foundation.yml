@@ -30,6 +30,7 @@ jobs:
           node scripts/seed-local.mjs
           node scripts/check-directory.mjs
           node scripts/check-collections.mjs
+          node scripts/check-dues-expenses.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

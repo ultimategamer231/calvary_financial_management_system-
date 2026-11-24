@@ -6,17 +6,27 @@ import { post } from "../actions";
 type Props = {
   options: Awaited<ReturnType<typeof choices>>;
   original: Awaited<ReturnType<typeof receipt>> | null;
+  dues: {
+    id: string | null;
+    member_id: string | null;
+    category_id: string | null;
+    currency: string | null;
+    due_date: string | null;
+    outstanding: number | null;
+  }[];
   date: string;
 };
-export function CollectionForm({ options, original, date }: Props) {
+export function CollectionForm({ options, original, date, dues }: Props) {
   const [key] = useState(() => crypto.randomUUID()),
     [kind, setKind] = useState(original?.payer_kind ?? "member"),
     [currency, setCurrency] = useState(original?.currency ?? "USD");
+  const [member, setMember] = useState(original?.member_id ?? "");
   const [lines, setLines] = useState(
     original?.allocations.map((l) => ({
       category: l.category_id,
+      obligation: l.obligation_id ?? "",
       amount: decimal(l.amount),
-    })) ?? [{ category: "", amount: "" }],
+    })) ?? [{ category: "", amount: "", obligation: "" }],
   );
   const [draft, setDraft] = useState<Record<string, string> | null>(null),
     [error, setError] = useState(""),
@@ -59,7 +69,11 @@ export function CollectionForm({ options, original, date }: Props) {
             <select
               name="member"
               required
-              defaultValue={original?.member_id ?? ""}
+              value={member}
+              onChange={(e) => {
+                setMember(e.target.value);
+                setLines(lines.map((l) => ({ ...l, obligation: "" })));
+              }}
             >
               <option value="">Choose member</option>
               {options.members.map((m) => (
@@ -96,7 +110,10 @@ export function CollectionForm({ options, original, date }: Props) {
           Currency
           <select
             value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
+            onChange={(e) => {
+              setCurrency(e.target.value);
+              setLines(lines.map((l) => ({ ...l, obligation: "" })));
+            }}
           >
             <option>USD</option>
             <option>LRD</option>
@@ -119,7 +136,9 @@ export function CollectionForm({ options, original, date }: Props) {
                 <select
                   required
                   value={l.category}
-                  onChange={(e) => change(i, { category: e.target.value })}
+                  onChange={(e) =>
+                    change(i, { category: e.target.value, obligation: "" })
+                  }
                 >
                   <option value="">Choose category</option>
                   {options.categories.map((c) => (
@@ -138,6 +157,34 @@ export function CollectionForm({ options, original, date }: Props) {
                   onChange={(e) => change(i, { amount: e.target.value })}
                 />
               </label>
+              {kind === "member" && (
+                <label>
+                  Apply allocation {i + 1} to
+                  <select
+                    value={l.obligation}
+                    onChange={(e) => change(i, { obligation: e.target.value })}
+                  >
+                    <option value="">Voluntary contribution</option>
+                    {dues
+                      .filter(
+                        (d) =>
+                          d.member_id === member &&
+                          d.category_id === l.category &&
+                          d.currency === currency &&
+                          (d.outstanding ||
+                            original?.allocations.some(
+                              (a) => a.obligation_id === d.id,
+                            )),
+                      )
+                      .map((d) => (
+                        <option key={d.id} value={d.id!}>
+                          {d.due_date} · {money(currency, d.outstanding!)}{" "}
+                          outstanding
+                        </option>
+                      ))}
+                  </select>
+                </label>
+              )}
               {lines.length > 1 && (
                 <button
                   type="button"
@@ -153,7 +200,12 @@ export function CollectionForm({ options, original, date }: Props) {
             <button
               className="secondary"
               type="button"
-              onClick={() => setLines([...lines, { category: "", amount: "" }])}
+              onClick={() =>
+                setLines([
+                  ...lines,
+                  { category: "", amount: "", obligation: "" },
+                ])
+              }
             >
               Add allocation
             </button>
@@ -193,7 +245,10 @@ export function CollectionForm({ options, original, date }: Props) {
           {lines.map((l, i) => (
             <p key={i}>
               {options.categories.find((c) => c.id === l.category)?.name} —{" "}
-              {money(currency, minor(l.amount)!)}
+              {money(currency, minor(l.amount)!)}{" "}
+              {kind === "member" && l.obligation
+                ? " · Assigned commitment"
+                : ""}
             </p>
           ))}
           <p>
@@ -219,6 +274,7 @@ export function CollectionForm({ options, original, date }: Props) {
                       total: String(total),
                       lines: lines.map((l) => ({
                         category: l.category,
+                        obligation: kind === "member" ? l.obligation : "",
                         amount: String(minor(l.amount)),
                       })),
                       replaces: original?.id ?? "",
