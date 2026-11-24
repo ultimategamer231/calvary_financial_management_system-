@@ -85,7 +85,9 @@ try {
   assert.equal(csv.status(), 200);
   assert.ok((await csv.text()).includes("'=Pilot Guest"));
   await page.goto(origin + "/members/" + member.id + "/statement?" + params);
-  await page.getByText("Pilot Statement Member", { exact: true }).waitFor();
+  await page
+    .getByRole("heading", { name: "Pilot Statement Member", exact: true })
+    .waitFor();
   await page.getByRole("link", { name: /CBC-/ }).first().waitFor();
   await page.goto(origin + "/settings");
   await page.getByLabel("Church name").fill("Pilot Church");
@@ -103,7 +105,12 @@ try {
   await page.goto(origin + "/audit?entity=church_profile");
   await page.getByText("church_profile", { exact: true }).first().waitFor();
   await inspect(page, "audit");
-  ok(await db.from("church_profile").update({name:before.church_name}).eq("id",true));
+  ok(
+    await db
+      .from("church_profile")
+      .update({ name: before.church_name })
+      .eq("id", true),
+  );
 } finally {
   await browser.close();
 }
