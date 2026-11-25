@@ -10,13 +10,18 @@ import {
   type Report,
 } from "@/lib/reports";
 import { Print } from "../receipts/[id]/controls";
+export function movementTotals(data: Report, currency: string) {
+  const row = data.totals.find((t) => t.currency === currency);
+  const income = BigInt(row?.income ?? 0);
+  const expense = BigInt(row?.expense ?? 0);
+  return { income, expense, net: income - expense };
+}
+
 export function Totals({ data }: { data: Report }) {
   return (
     <div className="summary-grid">
       {["USD", "LRD"].map((currency) => {
-        const r = data.totals.find((t) => t.currency === currency);
-        const income = BigInt(r?.income ?? 0),
-          expense = BigInt(r?.expense ?? 0);
+        const { income, expense, net } = movementTotals(data, currency);
         return (
           <section className="panel" key={currency}>
             <h2>{currency}</h2>
@@ -24,7 +29,7 @@ export function Totals({ data }: { data: Report }) {
               {[
                 ["Recorded income", income],
                 ["Recorded expenses", expense],
-                ["Net recorded movement", income - expense],
+                ["Net recorded movement", net],
               ].map(([label, value]) => (
                 <div key={String(label)}>
                   <dt>{String(label)}</dt>
@@ -38,49 +43,39 @@ export function Totals({ data }: { data: Report }) {
     </div>
   );
 }
-export function Lines({ rows }: { rows: Report["rows"] }) {
+const reportColumns = ["Date", "Entry", "Payer / payee", "Category", "Method", "Amount"] as const;
+type Column = typeof reportColumns[number];
+const dashboardColumns: readonly Column[] = ["Entry", "Amount", "Date", "Payer / payee", "Category", "Method"];
+
+export function Lines({ rows, recent = false }: { rows: Report["rows"]; recent?: boolean }) {
+  const columns = recent ? dashboardColumns : reportColumns;
   return (
-    <div
-      className="table-scroll"
-      role="region"
-      aria-label="Report table"
-      tabIndex={0}
-    >
+    <div className="table-scroll" role="region" aria-label={recent ? "Recent entries table" : "Report table"} tabIndex={0}>
       <table>
         <thead>
-          <tr>
-            {[
-              "Date",
-              "Entry",
-              "Payer / payee",
-              "Category",
-              "Method",
-              "Amount",
-            ].map((s) => (
-              <th key={s}>{s}</th>
-            ))}
-          </tr>
+          <tr>{columns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr>
         </thead>
         <tbody>
-          {rows.map((r, i) => (
-            <tr key={i}>
-              <td>{r.business_date}</td>
-              <td>
-                <Link
-                  href={
-                    (r.kind === "Income" ? "/receipts/" : "/expenses/") +
-                    r.record_id
-                  }
-                >
+          {rows.map((r, i) => {
+            const cells: Record<Column, React.ReactNode> = {
+              Date: <time dateTime={r.business_date}>{r.business_date}</time>,
+              Entry: <>
+                <Link href={(r.kind === "Income" ? "/receipts/" : "/expenses/") + r.record_id}>
                   {r.reference}
                 </Link>
-              </td>
-              <td>{r.party}</td>
-              <td>{r.category}</td>
-              <td>{r.method}</td>
-              <td>{money(r.currency, r.amount)}</td>
-            </tr>
-          ))}
+                {recent && <small>{r.kind}</small>}
+              </>,
+              "Payer / payee": r.party,
+              Category: r.category,
+              Method: r.method,
+              Amount: money(r.currency, r.amount),
+            };
+            return (
+              <tr key={i}>
+                {columns.map((column) => <td key={column}>{cells[column]}</td>)}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       {!rows.length && <p className="empty">No matching entries.</p>}

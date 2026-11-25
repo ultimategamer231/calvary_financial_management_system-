@@ -33,6 +33,7 @@ jobs:
           node scripts/check-collections.mjs
           node scripts/check-dues-expenses.mjs
           node scripts/check-reports.mjs
+          node --experimental-strip-types scripts/check-dashboard.mjs
           node scripts/check-pilot.mjs
           node scripts/check-restore.mjs --require-evidence
       - uses: actions/upload-artifact@v4

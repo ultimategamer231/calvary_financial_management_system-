@@ -1,0 +1,157 @@
+.dashboard {
+  --surface: var(--workspace-surface);
+  --rule: var(--workspace-line);
+  --muted: var(--workspace-muted);
+  --accent: var(--workspace-accent);
+  --radius: 6px;
+  width: 100%;
+  max-width: 92rem;
+  margin-inline: auto;
+  display: grid;
+  gap: 24px;
+  color: var(--workspace-ink);
+  font-variant-numeric: tabular-nums;
+}
+:global(.workspace) :global(.content):has(.dashboard) {
+  padding: 28px clamp(16px, 2.5vw, 36px) 48px;
+  background: var(--workspace-canvas);
+  min-height: calc(100svh - 54px);
+}
+.dashboard section { min-width: 0; }
+.dashboard h1 { font: 2.35rem/1.1 Georgia, serif; letter-spacing: -.035em; }
+.dashboard h2 { font-size: 1.1rem; line-height: 1.4; font-weight: 650; margin-bottom: 10px; }
+.dashboard h3 { font-size: .97rem; line-height: 1.35; font-weight: 650; }
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.heading p { margin-top: 4px; color: var(--muted); font-size: .9rem; }
+.filters { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+.filters label {
+  margin: 0;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.filters input {
+  height: 38px;
+  margin-top: 4px;
+  padding: 5px 9px;
+  border: 1px solid #848d9c;
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--workspace-ink);
+  font-size: .88rem;
+}
+.filters button {
+  min-height: 38px;
+  padding: 6px 14px;
+  background: var(--accent);
+  font-size: .87rem;
+}
+.filters button:hover { background: var(--rail); }
+.overview, .categories {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+.overview { border-top: 3px solid var(--accent); }
+.ledger { padding: 16px 22px; }
+.ledger + .ledger, .categories > div + div { border-left: 1px solid var(--rule); }
+.ledger h3 { color: var(--accent); }
+.ledger dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+  margin-top: 6px;
+}
+.ledger dt { color: var(--muted); font-size: .8rem; }
+.ledger dd { overflow-wrap: anywhere; }
+.net { grid-column: 1 / -1; display: flex; flex-direction: column-reverse; align-items: start; }
+.net dd { font-size: clamp(1.55rem, 2.4vw, 2.15rem); font-weight: 600; letter-spacing: -.035em; line-height: 1.2; }
+.detail { border-top: 1px solid var(--rule); padding-top: 10px; }
+.detail dd { font-size: 1rem; font-weight: 600; }
+.sectionHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.sectionHeading a { font-size: .85rem; font-weight: 600; color: var(--accent); text-decoration: none; padding-block: 4px; }
+.sectionHeading a:hover, .entries td a:hover { text-decoration: underline; }
+.entries :global(.table-scroll), .empty {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.entries table { min-width: 45rem; }
+.dashboard th, .dashboard td {
+  padding: 10px 16px;
+  border-color: var(--rule);
+  font-size: .88rem;
+  line-height: 1.4;
+}
+.dashboard th { white-space: nowrap; background: #eff1f5; font-size: .78rem; color: var(--muted); font-weight: 600; }
+.dashboard tbody tr:last-child td { border: 0; }
+.dashboard tbody tr:hover { background: #f7f8fb; }
+.entries td:first-child { min-width: 8rem; }
+.entries td:nth-child(2), .entries th:nth-child(2),
+.categories td:last-child, .categories th:last-child { text-align: right; white-space: nowrap; }
+.entries td:nth-child(2) { font-weight: 600; }
+.entries td:nth-child(3) { white-space: nowrap; }
+.entries td a { color: var(--accent); font-weight: 600; text-underline-offset: 3px; }
+.entries td small { display: block; margin-top: 1px; font-size: .75rem; color: var(--muted); }
+.categories > div { min-width: 0; }
+.categories h3 { padding: 14px 16px; }
+.categoryScroll { overflow-x: auto; }
+.categories table { min-width: 0; }
+.categories td:first-child { width: 46%; }
+.categories td, .categories th { padding-block: 9px; }
+.categories .empty { border: 0; border-top: 1px solid var(--rule); border-radius: 0; }
+.empty, .alert { padding: 20px 16px; font-size: .9rem; color: var(--muted); }
+.alert { background: #fff3ed; border-left: 3px solid #9a4832; color: #712c1c; }
+.loadingBlocks { display: grid; gap: 24px; }
+.loadingBlocks div { height: 12rem; border-block: 1px solid var(--rule); background: var(--surface); }
+.loadingBlocks div + div { height: 17rem; }
+
+@media (max-width: 1100px) {
+  .ledger { padding: 16px; }
+  .categories td, .categories th { padding-inline: 12px; }
+}
+@media (max-width: 660px) {
+  :global(.workspace) :global(.content):has(.dashboard) { padding: 20px 16px 32px; }
+  .dashboard { gap: 20px; }
+  .dashboard h1 { font-size: 2rem; }
+  .heading { align-items: start; padding-bottom: 16px; }
+  .filters { display: grid; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .filters button { justify-self: start; }
+  .filters input { width: 100%; min-width: 0; }
+  .overview, .categories { grid-template-columns: minmax(0, 1fr); }
+  .ledger + .ledger, .categories > div + div { border-left: 0; border-top: 1px solid var(--rule); }
+  .ledger { padding: 12px 16px; }
+  .ledger dl { display: block; margin-top: 4px; }
+  .ledger dl > div {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 8px;
+    flex-wrap: wrap;
+  }
+  .ledger dd { text-align: right; margin-left: auto; }
+  .net { padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+  .detail { padding-top: 4px; border: 0; }
+  .detail dd { font-size: .9rem; }
+  .dashboard th, .dashboard td { padding-inline: 12px; }
+  .entries td:first-child { max-width: 10rem; }
+}
+@media print {
+  :global(.workspace) :global(.content):has(.dashboard) { padding: 0; }
+  .filters, .sectionHeading a { display: none; }
+  .entries table { min-width: 0; }
+}
+.applied { font-size: .85rem; color: var(--muted); overflow-wrap: anywhere; }
+.applied a { margin-left: 8px; }
+.alert button { margin-top: 12px; }
