@@ -1,6 +1,6 @@
 // Read-only against the seeded local stack. A period with ledger activity is required.
 import assert from "node:assert/strict";
-import { chromium } from "@playwright/test";
+import { chromium, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { decimal, money } from "../lib/money.ts";
 import { fixtureStaff, login, origin } from "./check-collections.mjs";
@@ -47,6 +47,39 @@ async function verifyPeriod(page, db, filters) {
   return data;
 }
 
+async function checkRegisterControls(page, data) {
+  const table = page.getByRole("table", { name: "Recent entries table" });
+  const recent = data.rows.slice(0, 8);
+  if (recent.length > 1) {
+    const header = table.getByRole("columnheader", { name: "Amount", exact: true });
+    for (const direction of ["descending", "ascending"]) {
+      await header.getByRole("button").click();
+      await expect(header).toHaveAttribute("aria-sort", direction);
+      const expected = [...recent].sort((a, b) => {
+        if (a.currency !== b.currency) return a.currency.localeCompare(b.currency);
+        const delta = BigInt(a.amount) - BigInt(b.amount);
+        return (delta < 0n ? -1 : delta > 0n ? 1 : 0) * (direction === "ascending" ? 1 : -1);
+      });
+      assert.deepEqual(await table.locator("tbody tr td:nth-child(2)").allTextContents(),
+        expected.map((row) => money(row.currency, row.amount)));
+    }
+    for (const ledger of ["US dollar", "Liberian dollar"]) {
+      const categories = page.getByRole("table", { name: ledger + " categories" });
+      if (await categories.locator("tbody tr").count() < 2) continue;
+      const category = categories.getByRole("button", { name: "Category", exact: true });
+      await category.focus();
+      await page.keyboard.press("Enter");
+      await expect(categories.locator("th").first()).toHaveAttribute("aria-sort", "ascending");
+      await expect(header).toHaveAttribute("aria-sort", "ascending");
+    }
+  }
+  const submit = page.getByRole("button", { name: "Update period" });
+  await submit.hover();
+  await expect(page.getByRole("tooltip")).toHaveText("Apply these dates to both ledgers.");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
+}
+
 try {
   for (const [index, user] of staff.entries()) {
     const page = await login(browser, user);
@@ -67,6 +100,7 @@ try {
         const scan = await new AxeBuilder({ page }).analyze();
         assert.deepEqual(scan.violations.map((v) => v.id), []);
       }
+      await checkRegisterControls(page, data);
       const sample = data.rows[0];
       const filters = { from: sample.business_date, to: sample.business_date, currency: sample.currency };
       const filtered = await verifyPeriod(page, user.db, filters);

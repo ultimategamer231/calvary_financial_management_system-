@@ -1,4 +1,6 @@
 "use client";
+
+import { SubmitButton } from "@/app/submit-button";
 import { useActionState } from "react";
 import { uploadEvidence, voidExpense } from "../actions";
 export function Controls({ id, active }: { id: string; active: boolean }) {
@@ -20,7 +22,7 @@ export function Controls({ id, active }: { id: string; active: boolean }) {
               Reason
               <input required name="reason" maxLength={300} />
             </label>
-            <button disabled={pending}>Confirm void</button>
+            <SubmitButton label="Confirm void" busyLabel="Voiding…" hint="Void this expense with the reason entered." busy={pending} />
             <p role="status">{error}</p>
           </form>
         </details>
@@ -35,7 +37,7 @@ export function Controls({ id, active }: { id: string; active: boolean }) {
             required
           />
         </label>
-        <button disabled={busy}>Attach evidence</button>
+        <SubmitButton label="Attach evidence" busyLabel="Uploading…" hint="Upload this file as private expense evidence." busy={busy} />
         <p role="status">{message}</p>
       </form>
     </>

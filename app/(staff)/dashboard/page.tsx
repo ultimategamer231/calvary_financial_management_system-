@@ -1,8 +1,10 @@
+import { SortableTable } from "../sortable-table";
+import { FilterForm } from "@/app/submit-button";
 import Link from "next/link";
 import { requireStaff } from "@/lib/session";
 import { money } from "@/lib/money";
 import { invalid, period, report, type Filter, type Report } from "@/lib/reports";
-import { Lines, movementTotals } from "../reports/report-ui";
+import { amountCell, Lines, movementTotals } from "../reports/report-ui";
 import styles from "./dashboard.module.css";
 
 const ledgers = [
@@ -57,14 +59,11 @@ function Categories({ data }: { data: Report }) {
                 <h3>{name}</h3>
                 {groups.length ? (
                   <div className={styles.categoryScroll} tabIndex={0} role="region" aria-label={name + " category breakdown"}>
-                    <table aria-label={name + " categories"}>
-                      <thead><tr><th scope="col">Category</th><th scope="col">Type</th><th scope="col">Amount</th></tr></thead>
-                      <tbody>{groups.map((g) => (
-                        <tr key={JSON.stringify([g.kind, g.category])}>
-                          <td>{g.category}</td><td>{g.kind}</td><td>{money(currency, g.amount)}</td>
-                        </tr>
-                      ))}</tbody>
-                    </table>
+                    <SortableTable label={name + " categories"} columns={["Category", "Type", "Amount"]}
+                      rows={groups.map((g) => ({
+                        id: JSON.stringify([g.kind, g.category]),
+                        cells: [g.category, g.kind, amountCell(currency, g.amount)],
+                      }))} />
                   </div>
                 ) : <p className={styles.empty}>No matching categories.</p>}
               </div>
@@ -97,14 +96,14 @@ export default async function Page({ searchParams }: { searchParams: Promise<Fil
           <h1>Dashboard</h1>
           {valid && <p>{periodLabel(f)}</p>}
         </div>
-        <form className={styles.filters} aria-label="Reporting period">
+        <FilterForm className={styles.filters} name="Reporting period" label="Update period"
+          busyLabel="Updating…" hint="Apply these dates to both ledgers.">
           {Object.entries(f).filter(([key]) => !["from", "to"].includes(key)).map(([key, value]) => (
             <input type="hidden" key={key} name={key} value={value} />
           ))}
           <label>From<input type="date" name="from" defaultValue={f.from} /></label>
           <label>To<input type="date" name="to" defaultValue={f.to} /></label>
-          <button>Update period</button>
-        </form>
+        </FilterForm>
       </div>
       {data ? <>
         {activeFilters.length > 0 && <p className={styles.applied}>

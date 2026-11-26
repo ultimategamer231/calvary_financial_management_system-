@@ -1,4 +1,6 @@
 "use client";
+
+import { SubmitButton } from "@/app/submit-button";
 import { useState, useActionState } from "react";
 import { assign } from "./actions";
 export function Assign({
@@ -66,7 +68,7 @@ export function Assign({
           Amount per member
           <input required name="amount" inputMode="decimal" />
         </label>
-        <button disabled={pending}>Assign to selected members</button>
+        <SubmitButton label="Assign to selected members" busyLabel="Assigning…" hint="Create a commitment for each selected member." busy={pending} />
         {message && <p role="status">{message}</p>}
       </form>
     </details>

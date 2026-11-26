@@ -1,9 +1,11 @@
 "use client";
+
+import { SubmitButton } from "@/app/submit-button";
 import { useActionState } from "react";
 import { voidReceipt } from "../../contributions/actions";
 export function Print() {
   return (
-    <button className="secondary" onClick={() => window.print()}>
+    <button className="secondary" title="Open the print dialog" onClick={() => window.print()}>
       Print
     </button>
   );
@@ -21,7 +23,7 @@ export function Void({ id }: { id: string }) {
           Reason for voiding
           <input name="reason" required maxLength={300} />
         </label>
-        <button disabled={pending}>Confirm void</button>
+        <SubmitButton label="Confirm void" busyLabel="Voiding…" hint="Void this receipt with the reason entered." busy={pending} />
         {message && <p role="alert">{message}</p>}
       </form>
     </details>

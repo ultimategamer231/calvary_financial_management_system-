@@ -1,6 +1,17 @@
+import { RegisterHead, registerOrder, SortFields } from "../register-order";
+import { FilterForm } from "@/app/submit-button";
 import { database } from "@/lib/session";
 import { money } from "@/lib/money";
 import Link from "next/link";
+const columns = [
+  { label: "Description", field: "description" },
+  { label: "Date", field: "business_date" },
+  { label: "Payee", field: "payee" },
+  { label: "Category", field: "category" },
+  { label: "Amount", field: "amount", money: true },
+  { label: "Status" },
+];
+
 export default async function Page({
   searchParams,
 }: {
@@ -9,11 +20,12 @@ export default async function Page({
   const f = await searchParams;
   const n = Math.max(1, parseInt(f.page) || 1),
     db = await database();
+  const order = registerOrder(columns, f, "business_date", true);
   const q = db
     .from("expenses")
-    .select("*,expense_voids(expense_id)")
-    .order("business_date", { ascending: false })
-    .order("id");
+    .select("*,expense_voids(expense_id)");
+  if (columns.some((column) => column.field === order.field && column.money)) q.order("currency");
+  q.order(order.field, { ascending: !order.descending }).order("id");
   if (f.from) q.gte("business_date", f.from);
   if (f.to) q.lte("business_date", f.to);
   if (f.category) q.ilike("category", "%" + f.category + "%");
@@ -31,7 +43,8 @@ export default async function Page({
         </Link>
       </div>
       <section className="directory">
-        <form className="filters">
+        <FilterForm className="filters" label="Filter" busyLabel="Filtering…" hint="Apply these filters to the expenses register.">
+          <SortFields order={order} />
           <label>
             From
             <input name="from" type="date" defaultValue={f.from} />
@@ -52,8 +65,7 @@ export default async function Page({
               <option>LRD</option>
             </select>
           </label>
-          <button>Filter</button>
-        </form>
+        </FilterForm>
         <div
           className="table-scroll"
           role="region"
@@ -61,20 +73,7 @@ export default async function Page({
           tabIndex={0}
         >
           <table>
-            <thead>
-              <tr>
-                {[
-                  "Description",
-                  "Date",
-                  "Payee",
-                  "Category",
-                  "Amount",
-                  "Status",
-                ].map((s) => (
-                  <th key={s}>{s}</th>
-                ))}
-              </tr>
-            </thead>
+            <RegisterHead columns={columns} query={f} order={order} path="/expenses" />
             <tbody>
               {data.slice(0, 25).map((e) => (
                 <tr key={e.id}>
@@ -84,7 +83,7 @@ export default async function Page({
                   <td>{e.business_date}</td>
                   <td>{e.payee}</td>
                   <td>{e.category}</td>
-                  <td>{money(e.currency, e.amount)}</td>
+                  <td className="amount-cell">{money(e.currency, e.amount)}</td>
                   <td>{e.expense_voids ? "Void" : "Posted"}</td>
                 </tr>
               ))}

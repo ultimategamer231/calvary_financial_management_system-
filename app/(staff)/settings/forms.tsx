@@ -1,4 +1,6 @@
 "use client";
+
+import { SubmitButton } from "@/app/submit-button";
 import { useActionState } from "react";
 import { saveSetting } from "./actions";
 export function SettingsForms({
@@ -30,7 +32,7 @@ export function SettingsForms({
               />
             </label>
           ))}
-          <button disabled={pending}>Save church profile</button>
+          <SubmitButton label="Save church profile" busyLabel="Saving…" hint="Save the church details for future receipts." disabled={pending} />
         </form>
       </section>
       <section className="panel">
@@ -54,7 +56,7 @@ export function SettingsForms({
             New method
             <input name="method" required maxLength={80} />
           </label>
-          <button disabled={pending}>Add method</button>
+          <SubmitButton label="Add method" busyLabel="Adding…" hint="Make this payment method available for new entries." disabled={pending} />
         </form>
       </section>
       {message && (

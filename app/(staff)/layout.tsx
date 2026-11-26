@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/app/submit-button";
 import { Seal } from "@/app/seal";
 import { requireStaff } from "@/lib/session";
 import { signOut } from "../actions";
@@ -23,7 +24,7 @@ export default async function Workspace({ children }: { children: React.ReactNod
           <span className="workspace-title">Financial Management System</span>
           <span className="workspace-user">Signed in as {staff.label}.</span>
           <form action={signOut}>
-            <button className="secondary">Sign out</button>
+            <SubmitButton label="Sign out" busyLabel="Signing out…" hint="End this staff session." secondary />
           </form>
         </header>
         <main id="workspace-content" tabIndex={-1} className="content">{children}</main>

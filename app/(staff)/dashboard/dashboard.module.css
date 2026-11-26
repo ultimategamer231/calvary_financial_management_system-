@@ -94,7 +94,7 @@
   line-height: 1.4;
 }
 .dashboard th { white-space: nowrap; background: #eff1f5; font-size: .78rem; color: var(--muted); font-weight: 600; }
-.dashboard tbody tr:last-child td { border: 0; }
+.dashboard tbody tr:last-child td { border-bottom: 0; }
 .dashboard tbody tr:hover { background: #f7f8fb; }
 .entries td:first-child { min-width: 8rem; }
 .entries td:nth-child(2), .entries th:nth-child(2),
@@ -105,7 +105,9 @@
 .entries td small { display: block; margin-top: 1px; font-size: .75rem; color: var(--muted); }
 .categories > div { min-width: 0; }
 .categories h3 { padding: 14px 16px; }
-.categoryScroll { overflow-x: auto; }
+.categoryScroll { overflow-x: auto; border-top: 1px solid var(--table-frame); }
+.categories { overflow: clip; border-color: var(--table-frame); }
+.categories > div + div { border-color: var(--table-frame); }
 .categories table { min-width: 0; }
 .categories td:first-child { width: 46%; }
 .categories td, .categories th { padding-block: 9px; }
@@ -126,7 +128,8 @@
   .dashboard h1 { font-size: 2rem; }
   .heading { align-items: start; padding-bottom: 16px; }
   .filters { display: grid; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .filters button { justify-self: start; }
+  .filters :global(.submit-control) { justify-self: start; }
+  .filters :global(.action-hint) { left: 0; right: auto; }
   .filters input { width: 100%; min-width: 0; }
   .overview, .categories { grid-template-columns: minmax(0, 1fr); }
   .ledger + .ledger, .categories > div + div { border-left: 0; border-top: 1px solid var(--rule); }

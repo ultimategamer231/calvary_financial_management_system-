@@ -1,4 +1,6 @@
 "use client";
+
+import { SubmitButton } from "@/app/submit-button";
 import { useState, useActionState } from "react";
 import { saveExpense } from "./actions";
 import type { Database } from "@/lib/database.types";
@@ -110,9 +112,7 @@ export function ExpenseForm({
           {error}
         </p>
       )}
-      <button disabled={pending}>
-        {original ? "Post correction" : "Post expense"}
-      </button>
+      <SubmitButton label={original ? "Post correction" : "Post expense"} busyLabel="Posting…" hint="Save this expense to its currency ledger." busy={pending} />
     </form>
   );
 }

@@ -1,3 +1,4 @@
+import { FilterForm } from "@/app/submit-button";
 import { database } from "@/lib/session";
 import Link from "next/link";
 export default async function Page({
@@ -24,7 +25,7 @@ export default async function Page({
   return (
     <>
       <h1>Audit log</h1>
-      <form className="filters">
+      <FilterForm className="filters" label="Filter" busyLabel="Filtering…" hint="Show audit events matching these filters.">
         {Object.entries({
           actor: "Staff",
           entity: "Module",
@@ -42,8 +43,7 @@ export default async function Page({
             />
           </label>
         ))}
-        <button>Filter</button>
-      </form>
+      </FilterForm>
       <section className="directory">
         {data.slice(0, 25).map((r, i) => (
           <details className="audit-row" key={i}>

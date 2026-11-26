@@ -4,6 +4,7 @@
   --ink: #191b38;
   --line: #d9dbea;
   --paper: #f6f7fb;
+  --button-radius: 10px;
 }
 * {
   box-sizing: border-box;
@@ -41,7 +42,7 @@ button {
   background: var(--navy);
   color: white;
   border: 0;
-  border-radius: 5px;
+  border-radius: var(--button-radius);
   padding: 0.65rem 1.2rem;
   cursor: pointer;
   font-weight: 600;
@@ -447,3 +448,49 @@ dd {
     display: flex;
   }
 }
+
+button, .action {
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+button:not(:disabled):not(.secondary):not(.sort-trigger):hover, .action:hover { background: #27276d; }
+button.secondary:not(:disabled):hover { background: #f0f1f7; border-color: #979eb1; }
+button:disabled { cursor: default; }
+button[aria-busy="true"] { cursor: progress; }
+button[aria-busy="true"]::before {
+  content: "";
+  display: inline-block;
+  width: .8em;
+  height: .8em;
+  margin-inline-end: .5em;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: working-turn .75s linear infinite;
+}
+@keyframes working-turn { to { transform: rotate(360deg); } }
+.submit-control { position: relative; display: inline-flex; align-self: end; }
+.submit-control button { width: 100%; }
+.formpane .submit-control { display: flex; }
+.action-hint {
+  position: absolute;
+  z-index: 5;
+  top: 100%;
+  right: 0;
+  width: max-content;
+  max-width: min(15rem, 82vw);
+  padding: 6px 10px;
+  border-radius: 5px;
+  background: #25283c;
+  color: white;
+  font-size: .78rem;
+  line-height: 1.45;
+  font-weight: 400;
+}
+@media (max-width: 660px) {
+  .filters .action-hint { left: 0; right: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  button, .action { transition: none; }
+  button[aria-busy="true"]::before { animation: none; }
+}
+@media print { .action-hint { display: none; } }

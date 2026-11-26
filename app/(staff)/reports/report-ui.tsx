@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { SortableTable } from "../sortable-table";
+import { FilterForm } from "@/app/submit-button";
 import { choices } from "@/lib/collections";
 import { money } from "@/lib/money";
 import {
@@ -43,41 +44,33 @@ export function Totals({ data }: { data: Report }) {
     </div>
   );
 }
-const reportColumns = ["Date", "Entry", "Payer / payee", "Category", "Method", "Amount"] as const;
-type Column = typeof reportColumns[number];
-const dashboardColumns: readonly Column[] = ["Entry", "Amount", "Date", "Payer / payee", "Category", "Method"];
+export function amountCell(currency: string, amount: string | number) {
+  return { text: money(currency, amount), currency, minor: String(amount) };
+}
 
 export function Lines({ rows, recent = false }: { rows: Report["rows"]; recent?: boolean }) {
-  const columns = recent ? dashboardColumns : reportColumns;
+  const columns = recent
+    ? ["Entry", "Amount", "Date", "Payer / payee", "Category", "Method"]
+    : ["Date", "Entry", "Payer / payee", "Category", "Method", "Amount"];
+  const label = recent ? "Recent entries table" : "Report table";
+  const entries = rows.map((r, index) => {
+    const reference = {
+      text: r.reference,
+      href: (r.kind === "Income" ? "/receipts/" : "/expenses/") + r.record_id,
+      detail: recent ? r.kind : undefined,
+    };
+    const amount = amountCell(r.currency, r.amount);
+    return {
+      id: r.record_id + "-" + index,
+      cells: recent
+        ? [reference, amount, r.business_date, r.party, r.category, r.method]
+        : [r.business_date, reference, r.party, r.category, r.method, amount],
+    };
+  });
   return (
-    <div className="table-scroll" role="region" aria-label={recent ? "Recent entries table" : "Report table"} tabIndex={0}>
-      <table>
-        <thead>
-          <tr>{columns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr>
-        </thead>
-        <tbody>
-          {rows.map((r, i) => {
-            const cells: Record<Column, React.ReactNode> = {
-              Date: <time dateTime={r.business_date}>{r.business_date}</time>,
-              Entry: <>
-                <Link href={(r.kind === "Income" ? "/receipts/" : "/expenses/") + r.record_id}>
-                  {r.reference}
-                </Link>
-                {recent && <small>{r.kind}</small>}
-              </>,
-              "Payer / payee": r.party,
-              Category: r.category,
-              Method: r.method,
-              Amount: money(r.currency, r.amount),
-            };
-            return (
-              <tr key={i}>
-                {columns.map((column) => <td key={column}>{cells[column]}</td>)}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <div className="table-scroll" role="region" aria-label={label} tabIndex={0}>
+      <SortableTable label={label} columns={columns} rows={entries}
+        initialOrder={{ column: "Date", descending: true }} />
       {!rows.length && <p className="empty">No matching entries.</p>}
     </div>
   );
@@ -123,7 +116,7 @@ export async function ReportPage({
     <>
       <h1>{member ? "Member statement" : "Financial reports"}</h1>
       {name && <h2>{name}</h2>}
-      <form className="filters no-print">
+      <FilterForm className="filters no-print" label="Generate report" busyLabel="Generating…" hint="Run the report with these filters.">
         {!member && (
           <label>
             Report
@@ -180,8 +173,7 @@ export async function ReportPage({
             <option key={m}>{m}</option>
           ))}
         </datalist>
-        <button>Generate report</button>
-      </form>
+      </FilterForm>
       {valid ? (
         <>
           <p>
@@ -207,34 +199,13 @@ export async function ReportPage({
                 aria-label="Report table"
                 tabIndex={0}
               >
-                <table>
-                  <thead>
-                    <tr>
-                      {[
-                        "Member",
-                        "Due date",
-                        "Category",
-                        "Assigned",
-                        "Paid",
-                        "Outstanding",
-                      ].map((s) => (
-                        <th key={s}>{s}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dues.map((d) => (
-                      <tr key={d.id}>
-                        <td>{d.member_name}</td>
-                        <td>{d.due_date}</td>
-                        <td>{d.category_label}</td>
-                        {[d.amount, d.paid, d.outstanding].map((v, i) => (
-                          <td key={i}>{money(d.currency!, v!)}</td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <SortableTable label="Commitment balances" columns={["Member", "Due date", "Category", "Assigned", "Paid", "Outstanding"]}
+                  initialOrder={{ column: "Due date", descending: false }}
+                  rows={dues.map((d) => ({
+                    id: d.id!,
+                    cells: [d.member_name!, d.due_date!, d.category_label!,
+                      ...[d.amount, d.paid, d.outstanding].map((v) => amountCell(d.currency!, v!))],
+                  }))} />
               </div>
               {!dues.length && <p>No matching commitments.</p>}
             </>

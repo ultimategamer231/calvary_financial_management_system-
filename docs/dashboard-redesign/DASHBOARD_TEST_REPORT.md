@@ -66,3 +66,7 @@ node --experimental-strip-types scripts/check-dashboard.mjs
 ```
 
 The original integration suites require a fresh stack. Follow the order in [the CI workflow](../../.github/workflows/foundation.yml) on an isolated project. The foundation fixture requires unassigned staff slots. The [handover](DASHBOARD_REDESIGN_HANDOVER.md) includes a shorter manual walkthrough.
+
+## Table and button refinements
+
+The follow-up build passed lint, typecheck, money-format tests, the production build and the authenticated dashboard regression on the local pilot. Edge verified the seven widths and two axe scans. Browser checks exercised amount sorting within each currency on the dashboard and reports, keyboard activation of category sorting, independent table state and Escape dismissal of the period tooltip. A separate read-only comparison matched PostgreSQL ordering in both directions for contributions, expenses, dues, members and payment categories. A delayed local period navigation verified the disabled **Updating…** state and return to the populated register. [Screenshot evidence](screenshots/refinements/)

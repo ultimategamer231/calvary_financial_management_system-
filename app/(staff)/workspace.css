@@ -106,3 +106,54 @@
   .workspace-bar { justify-content: space-between; padding: 6px 16px; min-height: 44px; }
 }
 @media print { .workspace-skip { display: none; } }
+
+/* The perimeter and heading rule frame the register. Interior rules stay lighter. */
+.workspace {
+  --table-frame: #aab3c2;
+  --table-grid: #d0d6df;
+  --table-head: #edf0f5;
+}
+.workspace .table-scroll {
+  border: 1px solid var(--table-frame);
+  border-radius: 7px;
+  background: white;
+}
+.workspace .directory > .table-scroll { border-inline: 0; border-radius: 0; }
+.workspace table th, .workspace table td {
+  border-bottom: 1px solid var(--table-grid);
+  border-inline-end: 1px solid var(--table-grid);
+}
+.workspace table :is(th, td):last-child { border-inline-end: 0; }
+.workspace table tbody tr:last-child td { border-bottom: 0; }
+.workspace table thead th {
+  background: var(--table-head);
+  border-bottom: 1px solid var(--table-frame);
+}
+.workspace table th[aria-sort] {
+  background: #e4e8f2;
+  box-shadow: inset 0 -2px var(--workspace-accent);
+  color: var(--workspace-accent);
+}
+.workspace .sort-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 3px;
+  margin-inline: -3px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+  font: inherit;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.workspace .sort-trigger:hover { color: var(--workspace-accent); background: #dae0ed; }
+.sort-trigger span { font: .95rem/1 Arial, sans-serif; color: #535e71; }
+.workspace .amount-cell { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+@media print {
+  .workspace .sort-trigger span { display: none; }
+  .workspace table th[aria-sort] { box-shadow: none; }
+}

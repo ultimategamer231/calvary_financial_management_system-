@@ -20,6 +20,14 @@ On a new computer, follow the [repository setup guide](../../README.md) first, i
 - Try a period with no entries. Both currency summaries show zero, and the register explains how to select a different period. A service failure shows an error and a **Try again** button that requests the same URL.
 - Sign out, reopen the dashboard, and verify that login is required. Staff account settings, reports, exports, receipts and evidence continue to use their established routes.
 
+## Sorting and button feedback
+
+Select a column heading with arrows to sort it. Select it again to reverse the order. The underline and arrow identify the active column and direction. Amounts are ordered within each currency. Sorting **Recent entries** rearranges the same eight recent lines. **View full report** opens the entire filtered period. Each category table sorts independently.
+
+Contributions, expenses, dues, members and payment categories sort across the filtered register before pagination. Changing sort returns to the first page. On the dashboard and in reports, sorting affects the on-screen table. CSV export continues to use its original reporting order.
+
+Hover over a filter or submission button, or focus it with the keyboard, for its hint. Escape dismisses the hint. Buttons display progress while a request is underway. [Desktop](screenshots/refinements/desktop.png) · [Phone](screenshots/refinements/phone.png) · [Tooltip](screenshots/refinements/period-tooltip.png) · [Loading](screenshots/refinements/period-loading.png)
+
 ## Files and ownership
 
 | Files | Responsibility |
@@ -41,4 +49,4 @@ The redesign uses the installed Next.js, React, Playwright and axe versions. It 
 
 ## Release considerations
 
-This branch is local. The normal application build is sufficient to package it. Before a separately authorized rollout, review a representative reporting period on the church’s staging environment with its finance staff. Follow the existing [operations guide](../OPERATIONS.md) for environment and release sign-off. A previous application build can be restored independently of the ledger because this change has no database migration.
+The normal application build packages this redesign. Before a separately authorized rollout, review a representative reporting period on the church’s staging environment with its finance staff. Follow the existing [operations guide](../OPERATIONS.md) for environment and release sign-off. A previous application build can be restored independently of the ledger because this change has no database migration.

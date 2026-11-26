@@ -1,4 +1,6 @@
 "use client";
+
+import { SubmitButton } from "@/app/submit-button";
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import type { DirectoryKind, DirectoryRecord } from "@/lib/directory";
@@ -86,9 +88,7 @@ export function RecordForm({
           </p>
         )}
         <div className="commands">
-          <button disabled={pending}>
-            {pending ? "Saving…" : "Save " + (member ? "member" : "category")}
-          </button>
+          <SubmitButton label={"Save " + (member ? "member" : "category")} busyLabel="Saving…" hint="Save these directory details." busy={pending} />
           <Link href={member && record ? "/members/" + record.id : "/" + kind}>
             Cancel
           </Link>

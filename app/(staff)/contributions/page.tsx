@@ -1,7 +1,17 @@
+import { RegisterHead, registerOrder, SortFields } from "../register-order";
+import { FilterForm } from "@/app/submit-button";
 import Link from "next/link";
 import { database } from "@/lib/session";
 import { choices } from "@/lib/collections";
 import { money } from "@/lib/money";
+const columns = [
+  { label: "Receipt" },
+  { label: "Date", field: "business_date" },
+  { label: "Payer", field: "payer" },
+  { label: "Amount", field: "total", money: true },
+  { label: "Status" },
+];
+
 export default async function Page({
   searchParams,
 }: {
@@ -11,13 +21,14 @@ export default async function Page({
     db = await database(),
     options = await choices();
   const n = Math.max(1, Math.min(100000, parseInt(f.page) || 1));
+  const order = registerOrder(columns, f, "business_date", true);
   const query = db
     .from("collections")
     .select(
       "id,receipt,business_date,payer,currency,total,method,collection_voids(collection_id),allocations!inner(category_id)",
-    )
-    .order("business_date", { ascending: false })
-    .order("receipt", { ascending: false });
+    );
+  if (columns.some((column) => column.field === order.field && column.money)) query.order("currency");
+  query.order(order.field, { ascending: !order.descending }).order("receipt", { ascending: false });
   if (f.from) query.gte("business_date", f.from);
   if (f.to) query.lte("business_date", f.to);
   if (f.currency) query.eq("currency", f.currency);
@@ -42,7 +53,8 @@ export default async function Page({
         </Link>
       </div>
       <section className="directory">
-        <form className="filters">
+        <FilterForm className="filters" label="Filter" busyLabel="Filtering…" hint="Apply these filters to the contributions register.">
+          <SortFields order={order} />
           <label>
             Payer or receipt
             <input name="q" defaultValue={f.q} />
@@ -75,8 +87,7 @@ export default async function Page({
               </select>
             </label>
           ))}
-          <button>Filter</button>
-        </form>
+        </FilterForm>
         <div
           className="table-scroll"
           role="region"
@@ -84,13 +95,7 @@ export default async function Page({
           tabIndex={0}
         >
           <table>
-            <thead>
-              <tr>
-                {["Receipt", "Date", "Payer", "Amount", "Status"].map((h) => (
-                  <th key={h}>{h}</th>
-                ))}
-              </tr>
-            </thead>
+            <RegisterHead columns={columns} query={f} order={order} path="/contributions" />
             <tbody>
               {data.slice(0, 25).map((r) => (
                 <tr key={r.id}>
@@ -99,7 +104,7 @@ export default async function Page({
                   </td>
                   <td>{r.business_date}</td>
                   <td>{r.payer}</td>
-                  <td>{money(r.currency, r.total)}</td>
+                  <td className="amount-cell">{money(r.currency, r.total)}</td>
                   <td>{r.collection_voids ? "Void" : "Posted"}</td>
                 </tr>
               ))}

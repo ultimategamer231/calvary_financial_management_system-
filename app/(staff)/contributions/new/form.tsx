@@ -264,6 +264,8 @@ export function CollectionForm({ options, original, date, dues }: Props) {
           <div className="commands">
             <button
               disabled={pending}
+              aria-busy={pending}
+              title="Post the reviewed contribution and issue its receipt"
               onClick={() =>
                 start(async () => {
                   setError(
@@ -283,7 +285,7 @@ export function CollectionForm({ options, original, date, dues }: Props) {
                 })
               }
             >
-              Post contribution
+              {pending ? "Posting…" : "Post contribution"}
             </button>
             <button
               disabled={pending}

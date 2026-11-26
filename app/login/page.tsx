@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/app/submit-button";
 import { authConfigured } from "@/lib/auth-config";
 import { Seal } from "@/app/seal";
 import Link from "next/link";
@@ -55,7 +56,7 @@ export default async function Login({
               maxLength={1024}
             />
           </label>
-          <button disabled={!ready}>Sign in</button>
+          <SubmitButton label="Sign in" busyLabel="Signing in…" hint="Open the staff workspace." disabled={!ready} />
           <p>{ready && <Link href="/recover">Forgot password?</Link>}</p>
         </form>
       </section>

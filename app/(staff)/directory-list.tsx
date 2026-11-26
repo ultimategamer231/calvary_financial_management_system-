@@ -1,9 +1,13 @@
+import { RegisterHead, registerOrder, SortFields } from "./register-order";
+import { FilterForm } from "@/app/submit-button";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { database } from "@/lib/session";
 import type { DirectoryKind, DirectoryRecord } from "@/lib/directory";
 
 export type Filters = {
+  sort?: string;
+  dir?: string;
   q?: string;
   status?: string;
   page?: string;
@@ -17,6 +21,10 @@ export async function DirectoryList({
   filters: Filters;
 }) {
   const member = kind === "members";
+  const columns = member
+    ? [{ label: "Member ID" }, { label: "Name", field: "name" }, { label: "Phone" }, { label: "Status", field: "active" }]
+    : [{ label: "Category", field: "name" }, { label: "Group", field: "group_name" }, { label: "Status", field: "active" }, { label: "Action" }];
+  const order = registerOrder(columns, filters, "name");
   const term =
     typeof filters.q === "string" ? filters.q.trim().slice(0, 120) : "";
   const status = ["active", "inactive"].includes(filters.status ?? "")
@@ -33,7 +41,7 @@ export async function DirectoryList({
     : db.from("categories").select("*", { count: "exact" });
   if (status !== "all") search.eq("active", status === "active");
   const { data, error, count } = await search
-    .order("name")
+    .order(order.field, { ascending: !order.descending })
     .order("id")
     .range((page - 1) * size, page * size - 1);
   if (page > 1 && (error?.code === "PGRST103" || (!error && !data?.length)))
@@ -41,7 +49,7 @@ export async function DirectoryList({
       "/" +
         kind +
         "?" +
-        new URLSearchParams({ q: term, status: status ?? "all" }),
+        new URLSearchParams({ q: term, status: status ?? "all", sort: order.field, dir: order.descending ? "desc" : "asc" }),
     );
   if (error) throw new Error("The directory could not be loaded.");
   const rows: DirectoryRecord[] = data ?? [];
@@ -51,7 +59,7 @@ export async function DirectoryList({
   const pageHref = (n: number) =>
     root +
     "?" +
-    new URLSearchParams({ q: term, status: status ?? "all", page: String(n) });
+    new URLSearchParams({ q: term, status: status ?? "all", sort: order.field, dir: order.descending ? "desc" : "asc", page: String(n) });
   return (
     <>
       <div className="title-row">
@@ -66,7 +74,8 @@ export async function DirectoryList({
         </p>
       )}
       <section className="directory">
-        <form className="filters" action={root}>
+        <FilterForm className="filters" action={root} label="Apply filters" busyLabel="Filtering…" hint="Apply these filters to the directory.">
+          <SortFields order={order} />
           {member && (
             <label>
               Search members
@@ -88,8 +97,7 @@ export async function DirectoryList({
               </option>
             </select>
           </label>
-          <button>Apply filters</button>
-        </form>
+        </FilterForm>
         {rows.length ? (
           <div
             className="table-scroll"
@@ -99,15 +107,7 @@ export async function DirectoryList({
           >
             <table>
               <caption className="sr-only">{title}</caption>
-              <thead>
-                <tr>
-                  <th>{member ? "Member ID" : "Category"}</th>
-                  <th>{member ? "Name" : "Group"}</th>
-                  {member && <th>Phone</th>}
-                  <th>Status</th>
-                  {!member && <th>Action</th>}
-                </tr>
-              </thead>
+              <RegisterHead columns={columns} query={filters} order={order} path={root} />
               <tbody>
                 {rows.map((r) => (
                   <tr key={r.id}>
