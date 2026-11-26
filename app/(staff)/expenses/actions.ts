@@ -1,5 +1,6 @@
 "use server";
 import { requireStaff, database } from "@/lib/session";
+import { evidenceFormat, evidenceName } from "@/lib/evidence";
 import { minor } from "@/lib/money";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -46,28 +47,20 @@ export async function uploadEvidence(
   if (!(file instanceof File) || file.size > 2 * 1024 * 1024 || !file.size)
     return "Select a PDF, JPEG or PNG file up to 2 MB.";
   const bytes = Buffer.from(await file.arrayBuffer());
-  const type =
-    bytes.subarray(0, 5).toString() === "%PDF-"
-      ? "application/pdf"
-      : bytes.subarray(0, 8).toString("hex") === "89504e470d0a1a0a"
-        ? "image/png"
-        : bytes.subarray(0, 3).toString("hex") === "ffd8ff"
-          ? "image/jpeg"
-          : null;
-  if (!type) return "Unsupported file contents.";
+  const format = evidenceFormat(bytes);
+  if (!format) return "Unsupported file contents.";
   const db = await database();
   const {
     data: { user },
   } = await db.auth.getUser();
   if (!user) return "Sign in again.";
-  const name =
-    file.name.replace(/[^A-Za-z0-9._-]/g, "_").slice(-90) || "evidence";
+  const name = evidenceName(file.name, format.suffix);
   const r = await db.storage
     .from("expense-evidence")
     .upload(
       id + "/" + user.id + "_" + crypto.randomUUID() + "_" + name,
       bytes,
-      { contentType: type, upsert: false },
+      { contentType: format.mime, upsert: false },
     );
   if (r.error) return "Upload failed. Your posted expense is saved.";
   revalidatePath("/expenses/" + id);

@@ -130,6 +130,11 @@ try {
     if (label) {
       await page.waitForURL("**/dashboard");
       await page.getByText("Signed in as " + label + ".").waitFor();
+      const tokens = (await page.context().cookies()).filter((cookie) =>
+        /^sb-.*-auth-token(?:\.\d+)?$/.test(cookie.name),
+      );
+      assert.ok(tokens.length);
+      assert.ok(tokens.every((cookie) => cookie.httpOnly && cookie.secure && cookie.sameSite === "Lax"));
       for (const width of [390, 1280]) {
         await page.setViewportSize({ width, height: 800 });
         await accessible(page);

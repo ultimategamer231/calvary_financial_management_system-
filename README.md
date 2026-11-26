@@ -10,10 +10,10 @@ pnpm install --frozen-lockfile
 pnpm run db:start
 node scripts/configure-local.mjs
 pnpm build
-pnpm start --port 3107
+pnpm start:local --port 3107
 ```
 
-Open http://localhost:3107. The configure command creates a private local environment file and refuses to overwrite an existing one. The API uses port 55321 and PostgreSQL uses 55322. Keep this local development stack on a trusted machine. Use `pnpm exec supabase stop` from this repository to stop Calvary.
+Open http://localhost:3107. The configure command creates a private local environment file and refuses to overwrite an existing one. The API uses port 55321 and PostgreSQL uses 55322. The local start command creates a project-specific Docker bridge and verifies the published ports are loopback-only. For a stack created by an older version, first run `pnpm exec supabase stop` in this repository to preserve its data volumes, then `pnpm db:start`. If the network preflight reports an exposed port on Docker Desktop, use **Settings → Resources → Network → Port binding behavior → Localhost by default**, apply the setting, then retry. This preference also affects future containers in other local projects. The preflight uses an empty BusyBox container to test publishing before bringing up the ledger. Use `pnpm exec supabase stop` from this repository to stop Calvary.
 
 ## Verify or explore
 With the web server running, use a second terminal. Run `pnpm exec playwright install chromium` then `pnpm test:foundation` on a fresh stack with both slots empty. It creates ephemeral fictitious users, exercises real sign-in and RLS, and removes those users. Screenshots go to test-results. Run `pnpm lint` and `pnpm typecheck` for static checks.

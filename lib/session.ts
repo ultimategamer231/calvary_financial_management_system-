@@ -1,4 +1,4 @@
-import { authConfigured } from "./auth-config";
+import { authConfigured, authCookieOptions } from "./auth-config";
 import type { Database } from "./database.types";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
@@ -11,6 +11,7 @@ export async function database() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      cookieOptions: authCookieOptions,
       cookies: {
         getAll: () => jar.getAll(),
         setAll(values) {

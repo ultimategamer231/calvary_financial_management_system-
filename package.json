@@ -4,13 +4,14 @@
   "private": true,
   "packageManager": "pnpm@10.34.9",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname 127.0.0.1",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit",
     "test:foundation": "node scripts/check-foundation.mjs",
-    "db:start": "supabase start -x realtime,imgproxy,mailpit,studio,edge-runtime,logflare,vector,supavisor"
+    "db:start": "node scripts/start-local.mjs",
+    "start:local": "next start --hostname 127.0.0.1"
   },
   "dependencies": {
     "@fontsource/noto-sans": "^5.3.0",

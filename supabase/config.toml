@@ -24,6 +24,7 @@ enabled = false
 [auth]
 enabled = true
 site_url = "http://localhost:3107"
+minimum_password_length = 12
 enable_signup = false
 enable_anonymous_sign_ins = false
 [auth.email]
