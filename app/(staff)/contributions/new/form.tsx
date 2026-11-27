@@ -1,9 +1,21 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import type { choices, receipt } from "@/lib/collections";
 import { money, decimal, minor } from "@/lib/money";
 import { post } from "../actions";
+import {
+  deliver,
+  lease,
+  read,
+  save,
+  type Draft,
+  type Item,
+} from "@/lib/offline-browser";
 type Props = {
+  owner: string;
+  offlineId?: string;
+  initial?: Draft;
+  onSaved?: () => void;
   options: Awaited<ReturnType<typeof choices>>;
   original: Awaited<ReturnType<typeof receipt>> | null;
   dues: {
@@ -16,21 +28,116 @@ type Props = {
   }[];
   date: string;
 };
-export function CollectionForm({ options, original, date, dues }: Props) {
-  const [key] = useState(() => crypto.randomUUID()),
-    [kind, setKind] = useState(original?.payer_kind ?? "member"),
-    [currency, setCurrency] = useState(original?.currency ?? "USD");
-  const [member, setMember] = useState(original?.member_id ?? "");
+export function CollectionForm({
+  options,
+  original,
+  date,
+  dues,
+  owner,
+  offlineId,
+  initial,
+  onSaved,
+}: Props) {
+  const [key] = useState(() => offlineId ?? crypto.randomUUID()),
+    [kind, setKind] = useState(
+      initial?.kind ?? original?.payer_kind ?? "member",
+    ),
+    [currency, setCurrency] = useState(
+      initial?.currency ?? original?.currency ?? "USD",
+    );
+  const [member, setMember] = useState(
+    initial?.member ?? original?.member_id ?? "",
+  );
   const [lines, setLines] = useState(
-    original?.allocations.map((l) => ({
-      category: l.category_id,
-      obligation: l.obligation_id ?? "",
-      amount: decimal(l.amount),
-    })) ?? [{ category: "", amount: "", obligation: "" }],
+    initial?.lines ??
+      original?.allocations.map((l) => ({
+        category: l.category_id,
+        obligation: l.obligation_id ?? "",
+        amount: decimal(l.amount),
+      })) ?? [{ category: "", amount: "", obligation: "" }],
   );
   const [draft, setDraft] = useState<Record<string, string> | null>(null),
     [error, setError] = useState(""),
     [pending, start] = useTransition();
+  const [fields, setFields] = useState(
+    initial?.fields ?? {
+      date: original?.business_date ?? date,
+      method:
+        original?.method ??
+        (options.methods.includes("Cash")
+          ? "Cash"
+          : (options.methods[0] ?? "")),
+      guest: original?.payer_kind === "guest" ? original.payer : "",
+      notes: original?.notes ?? "",
+      reference: original?.reference ?? "",
+    },
+  );
+  const [touched, setTouched] = useState(false);
+  const [writable, setWritable] = useState(!offlineId);
+  const writes = useRef(Promise.resolve());
+  const finished = useRef(false);
+  useEffect(() => {
+    if (!navigator.locks || original) return;
+    let release: (() => void) | undefined,
+      live = true;
+    void navigator.locks
+      .request("calvary-edit:" + key, { ifAvailable: true }, async (lock) => {
+        if (!live) return;
+        if (!lock) {
+          setError("This entry is already open in another tab.");
+          return;
+        }
+        const existing = initial ? await read<Item>(owner, key) : null;
+        if (!live) return;
+        if (
+          initial &&
+          (!existing ||
+            existing.state === "pending" ||
+            JSON.stringify(existing.draft) !== JSON.stringify(initial))
+        ) {
+          setError("This entry changed. Reopen it from the saved list.");
+          return;
+        }
+        setWritable(true);
+        await new Promise<void>((resolve) => {
+          release = resolve;
+        });
+      })
+      .catch(() => setError("Unable to unlock the saved entry."));
+    return () => {
+      live = false;
+      release?.();
+    };
+  }, [offlineId, key, owner, initial, original]);
+  useEffect(() => {
+    if (
+      !writable ||
+      !touched ||
+      original ||
+      finished.current ||
+      lease()?.owner !== owner
+    )
+      return;
+    const snapshot = { fields, kind, currency, member, lines };
+    writes.current = writes.current
+      .then(() => save(owner, key, { state: "draft", draft: snapshot }))
+      .catch(() =>
+        setError(
+          "Draft could not be saved on this device. Keep this screen open.",
+        ),
+      );
+  }, [
+    fields,
+    kind,
+    currency,
+    member,
+    lines,
+    writable,
+    touched,
+    original,
+    owner,
+    key,
+  ]);
   const total = lines.reduce((s, l) => s + (minor(l.amount) ?? 0n), 0n);
   function change(index: number, patch: Partial<(typeof lines)[number]>) {
     setLines(lines.map((l, i) => (i === index ? { ...l, ...patch } : l)));
@@ -39,7 +146,23 @@ export function CollectionForm({ options, original, date, dues }: Props) {
     <>
       <form
         className="panel record"
-        hidden={!!draft}
+        hidden={!!draft || !writable}
+        onChange={(e) => {
+          setTouched(true);
+          const input = e.target;
+          if (
+            !(
+              input instanceof HTMLInputElement ||
+              input instanceof HTMLSelectElement
+            )
+          )
+            return;
+          if (input.name && input.name !== "member")
+            setFields((previous) => ({
+              ...previous,
+              [input.name]: input.value,
+            }));
+        }}
         onSubmit={(e) => {
           e.preventDefault();
           const fields = Object.fromEntries(
@@ -91,20 +214,13 @@ export function CollectionForm({ options, original, date, dues }: Props) {
               name="guest"
               required
               maxLength={160}
-              defaultValue={
-                original?.payer_kind === "guest" ? original.payer : ""
-              }
+              defaultValue={fields.guest}
             />
           </label>
         )}
         <label>
           Business date
-          <input
-            name="date"
-            type="date"
-            defaultValue={original?.business_date ?? date}
-            required
-          />
+          <input name="date" type="date" defaultValue={fields.date} required />
         </label>
         <label>
           Currency
@@ -121,7 +237,7 @@ export function CollectionForm({ options, original, date, dues }: Props) {
         </label>
         <label>
           Payment method
-          <select name="method" defaultValue={original?.method ?? "Cash"}>
+          <select name="method" defaultValue={fields.method}>
             {options.methods.map((m) => (
               <option key={m}>{m}</option>
             ))}
@@ -157,7 +273,7 @@ export function CollectionForm({ options, original, date, dues }: Props) {
                   onChange={(e) => change(i, { amount: e.target.value })}
                 />
               </label>
-              {kind === "member" && (
+              {kind === "member" && !offlineId && (
                 <label>
                   Apply allocation {i + 1} to
                   <select
@@ -189,7 +305,10 @@ export function CollectionForm({ options, original, date, dues }: Props) {
                 <button
                   type="button"
                   className="secondary"
-                  onClick={() => setLines(lines.filter((_, n) => n !== i))}
+                  onClick={() => {
+                    setTouched(true);
+                    setLines(lines.filter((_, n) => n !== i));
+                  }}
                 >
                   Remove allocation {i + 1}
                 </button>
@@ -216,12 +335,12 @@ export function CollectionForm({ options, original, date, dues }: Props) {
           <input
             name="reference"
             maxLength={160}
-            defaultValue={original?.reference}
+            defaultValue={fields.reference}
           />
         </label>
         <label>
           Notes (optional)
-          <input name="notes" maxLength={600} defaultValue={original?.notes} />
+          <input name="notes" maxLength={600} defaultValue={fields.notes} />
         </label>
         {original && (
           <label>
@@ -268,20 +387,66 @@ export function CollectionForm({ options, original, date, dues }: Props) {
               title="Post the reviewed contribution and issue its receipt"
               onClick={() =>
                 start(async () => {
-                  setError(
-                    await post(key, {
-                      ...draft,
-                      kind,
-                      currency,
-                      total: String(total),
-                      lines: lines.map((l) => ({
-                        category: l.category,
-                        obligation: kind === "member" ? l.obligation : "",
-                        amount: String(minor(l.amount)),
-                      })),
-                      replaces: original?.id ?? "",
-                    }),
-                  );
+                  const entry = {
+                    ...draft,
+                    kind,
+                    currency,
+                    total: String(total),
+                    lines: lines.map((l) => ({
+                      category: l.category,
+                      obligation: kind === "member" ? l.obligation : "",
+                      amount: String(minor(l.amount)),
+                    })),
+                    replaces: original?.id ?? "",
+                  };
+                  if (
+                    !original &&
+                    lease()?.owner === owner &&
+                    (!entry.lines.some((l) => l.obligation) || navigator.onLine)
+                  ) {
+                    try {
+                      await writes.current;
+                      await save(owner, key, {
+                        state: "pending",
+                        draft: {
+                          kind,
+                          member,
+                          currency,
+                          fields: { ...fields, ...draft },
+                          lines,
+                        },
+                        entry,
+                      });
+                      finished.current = true;
+                    } catch {
+                      setError(
+                        "Could not save the contribution. Keep this screen open and retry.",
+                      );
+                      return;
+                    }
+                    let receipt: string | undefined;
+                    if (navigator.onLine) {
+                      try {
+                        receipt = await deliver(owner, key);
+                      } catch {
+                        /* A retry uses the same request key. */
+                      }
+                    }
+                    // A document navigation reaches the cached shell even when the Next router is offline.
+                    if (onSaved) onSaved();
+                    else {
+                      const destination = receipt ? "/receipts/" + receipt : "/offline";
+                      window.location.assign(destination);
+                    }
+                    return;
+                  }
+                  if (offlineId || !navigator.onLine) {
+                    setError(
+                      "Reconnect and verify your session to post this entry.",
+                    );
+                    return;
+                  }
+                  setError(await post(key, entry, owner));
                 })
               }
             >

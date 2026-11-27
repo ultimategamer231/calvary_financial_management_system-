@@ -3,8 +3,8 @@ import { database, requireStaff } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import type { Json } from "@/lib/database.types";
-export async function post(key: string, entry: Json) {
-  await requireStaff();
+export async function post(key: string, entry: Json, owner: string) {
+  if ((await requireStaff()).id !== owner) return "Your staff session changed. Reopen the form.";
   const db = await database();
   const { data, error } = await db.rpc("post_collection", {
     request_key_input: key,

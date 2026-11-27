@@ -734,6 +734,7 @@ export type Database = {
       };
     };
     Functions: {
+      offline_storage_key: { Args: never; Returns: string }
       account_roster: {
         Args: Record<PropertyKey, never>;
         Returns: {

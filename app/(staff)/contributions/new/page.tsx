@@ -1,4 +1,4 @@
-import { database } from "@/lib/session";
+import { database, requireStaff } from "@/lib/session";
 import { choices, receipt } from "@/lib/collections";
 import { CollectionForm } from "./form";
 import { today } from "@/lib/money";
@@ -29,6 +29,7 @@ export default async function Page({
         {original ? "Correct " + original.receipt : "Record contribution"}
       </h1>
       <CollectionForm
+        owner={(await requireStaff()).id}
         options={await choices()}
         dues={dues}
         original={original}

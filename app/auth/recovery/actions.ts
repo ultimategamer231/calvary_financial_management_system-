@@ -1,4 +1,5 @@
 "use server";
+import { resetOfflineSession } from "@/lib/offline-session";
 import { database, requireStaff } from "@/lib/session";
 import { redirect } from "next/navigation";
 export async function requestReset(_prev: string, form: FormData) {
@@ -25,6 +26,7 @@ export async function changePassword(_prev: string, form: FormData) {
   const db = await database();
   const { error } = await db.auth.updateUser({ password: pass });
   if (error) return "Password change failed. Request a fresh recovery link.";
+  await resetOfflineSession();
   await db.auth.signOut();
   redirect("/login");
 }

@@ -56,6 +56,7 @@ try {
   });
   assert.ok(signup.error, "Public signup must be disabled");
   assert.ok((await anon.from("staff_slots").select()).error);
+  assert.ok((await anon.rpc("offline_storage_key")).error);
   const labels = ["Finance Admin", "Finance Assistant", null];
   for (const label of labels) {
     const email = randomUUID() + "@example.invalid",
@@ -100,6 +101,7 @@ try {
     assert.ifError(
       (await db.auth.signInWithPassword({ email, password })).error,
     );
+    assert.equal(!!(await db.rpc("offline_storage_key")).data, Boolean(label));
     const slots = await db.from("staff_slots").select("label");
     assert.ifError(slots.error);
     assert.deepEqual(slots.data, label ? [{ label }] : []);
@@ -150,6 +152,7 @@ try {
             id +
             "'",
         );
+        assert.ok((await db.rpc("offline_storage_key")).error);
         const revoked = await db.from("staff_assignment_history").select("id");
         assert.ifError(revoked.error);
         assert.deepEqual(revoked.data, []);

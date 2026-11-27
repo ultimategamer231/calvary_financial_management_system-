@@ -37,6 +37,7 @@ jobs:
           node --experimental-strip-types scripts/check-dashboard.mjs
           node scripts/check-pilot.mjs
           node scripts/check-restore.mjs --require-evidence
+          node scripts/check-offline.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

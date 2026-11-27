@@ -12,3 +12,11 @@ Before live use, the church operator must select retention, recovery objectives,
 
 ## Incidents
 On suspected unauthorized activity, suspend affected slot bindings and lock the affected Auth identity. Preserve logs, receipts and database history. Restrict application traffic while the operator establishes the affected interval. Restore a copy separately, compare totals and file manifests, and document discrepancies. Resume posting after church authorization. A frontend rollback must remain compatible with the database schema. Do not overwrite the live ledger with an old snapshot to undo a single posting.
+
+## Offline collection entry
+
+Apply migration 20261127000100 before enabling the new application build. Use HTTPS or localhost and a trusted browser profile with persistent site data. After staff sign in, wait for “Ready for offline use.” The app stores encrypted collection drafts, member names and IDs, active categories and payment methods. The public offline screen and its static assets are the only service-worker cache entries.
+
+During an outage use Offline collections, or reopen /dashboard to reach it. Review each collection before submitting. The saved list separates unfinished drafts, collections waiting for the server, and entries that need review. Staff can compare pending totals separately for USD and LRD. Receipts become available in Contributions after the database accepts each entry. Keep the app open after reconnecting so automatic retries can finish. Check the list before clearing site data or changing devices. Browser storage is the only copy of unsynced work and private browsing or eviction can erase it.
+
+The 24-hour window starts at the last online staff verification. Before sharing a computer, sign out online or use Lock offline collections while disconnected and lock the operating system. Locking offline collections protects the offline workspace only. On expiry or sign-out, the same staff identity can recover its encrypted records by signing in online. A disconnected browser learns about a revoked staff assignment on reconnect. An unlocked device and its browser profile must be physically protected during the offline window.

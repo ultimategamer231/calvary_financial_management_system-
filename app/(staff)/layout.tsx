@@ -1,3 +1,4 @@
+import { OfflineStatus } from "@/app/offline/status";
 import { SubmitButton } from "@/app/submit-button";
 import { Seal } from "@/app/seal";
 import { requireStaff } from "@/lib/session";
@@ -27,6 +28,7 @@ export default async function Workspace({ children }: { children: React.ReactNod
             <SubmitButton label="Sign out" busyLabel="Signing out…" hint="End this staff session." secondary />
           </form>
         </header>
+        <OfflineStatus owner={staff.id} />
         <main id="workspace-content" tabIndex={-1} className="content">{children}</main>
       </div>
     </div>

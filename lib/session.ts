@@ -41,5 +41,5 @@ export async function requireStaff() {
     .maybeSingle();
   if (error) throw new Error("Staff access could not be verified.");
   if (!data) redirect("/login?error=access");
-  return { label: String(data.label), email: user.email };
+  return { id: user.id, label: String(data.label), email: user.email };
 }

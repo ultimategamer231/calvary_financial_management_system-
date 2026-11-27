@@ -26,7 +26,21 @@ export async function proxy(request: NextRequest) {
       },
     },
   );
-  await db.auth.getUser();
+  const { data: { user } } = await db.auth.getUser();
+  const path = request.nextUrl.pathname;
+  if (path === "/login" && request.nextUrl.searchParams.get("error") === "access") {
+    response.cookies.delete("calvary-offline");
+    response.cookies.delete("calvary-device");
+  } else if (user && request.method === "GET" && path === "/dashboard" && !request.cookies.has("calvary-device")) {
+    // Prepare browsers that were already signed in when offline support was added.
+    response.cookies.set("calvary-device", crypto.randomUUID(), {
+      ...authCookieOptions, httpOnly: false, maxAge: 60 * 60 * 24 * 365,
+    });
+  }
+  if (request.nextUrl.pathname === "/login" && request.nextUrl.searchParams.get("error") === "access") {
+    response.cookies.delete("calvary-offline");
+    response.cookies.delete("calvary-device");
+  }
   response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
