@@ -9,10 +9,32 @@ const require = createRequire(import.meta.url);
 const cli = join(dirname(require.resolve("supabase/package.json")), "dist", "supabase.js");
 const docker = (...args) => execFileSync("docker", args, { encoding: "utf8" }).trim();
 
+// Some Docker Desktop versions report an IPv6 wildcard alongside a loopback
+// mapping even when only the Windows loopback proxy is listening.
+function verifiedDesktopLoopback(port, mappings) {
+  if (process.platform !== "win32" || port.HostIp !== "::" || !/^\d{1,5}$/.test(port.HostPort)) return false;
+  if (!mappings.some((other) => other.HostIp === "127.0.0.1" && other.HostPort === port.HostPort)) return false;
+  const endpoint = process.env.DOCKER_HOST || docker("context", "inspect", "--format", '{{(index .Endpoints "docker").Host}}');
+  if (!/^npipe:\/\/\/\/\.\/pipe\/(dockerDesktopLinuxEngine|docker_engine)$/i.test(endpoint)) return false;
+  const command = [
+    "$ErrorActionPreference = 'Stop'",
+    "$sockets = Get-NetTCPConnection -State Listen -LocalPort " + port.HostPort,
+    "foreach ($socket in $sockets) {",
+    "  if ($socket.LocalAddress -notin @('127.0.0.1', '::1')) { exit 1 }",
+    "  if ((Get-Process -Id $socket.OwningProcess).ProcessName -ne 'com.docker.backend') { exit 1 }",
+    "}",
+    "if (-not $sockets) { exit 1 }",
+  ].join("\n");
+  execFileSync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", command]);
+  return true;
+}
+
 function checkPorts(id) {
   const ports = JSON.parse(docker("inspect", "--format", "{{json .NetworkSettings.Ports}}", id));
-  for (const port of Object.values(ports ?? {}).flat()) {
-    if (port && !["127.0.0.1", "::1"].includes(port.HostIp)) {
+  for (const [containerPort, mappings] of Object.entries(ports ?? {})) {
+    for (const port of mappings ?? []) {
+      if (["127.0.0.1", "::1"].includes(port.HostIp)) continue;
+      if (containerPort.endsWith("/tcp") && verifiedDesktopLoopback(port, mappings)) continue;
       throw new Error("Docker published a non-loopback port. See the local networking instructions in README.md.");
     }
   }
