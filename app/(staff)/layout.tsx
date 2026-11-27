@@ -28,7 +28,7 @@ export default async function Workspace({ children }: { children: React.ReactNod
             <SubmitButton label="Sign out" busyLabel="Signing out…" hint="End this staff session." secondary />
           </form>
         </header>
-        <OfflineStatus owner={staff.id} />
+        <section aria-label="Offline collection access"><OfflineStatus owner={staff.id} /></section>
         <main id="workspace-content" tabIndex={-1} className="content">{children}</main>
       </div>
     </div>
